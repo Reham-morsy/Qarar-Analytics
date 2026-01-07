@@ -1,124 +1,167 @@
 import streamlit as st
 import pandas as pd
 import plotly.express as px
-from datetime import datetime
 
-# 1. إعدادات الصفحة
+# 1. إعدادات الصفحة والهوية
 st.set_page_config(
     page_title="Qarar | قرار",
-    page_icon="💎",
+    page_icon="🎯",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# CSS لتحسين المظهر وإخفاء العلامات المائية
+# تخصيص CSS: جعل الأزرار والواجهة أجمل
 st.markdown("""
 <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     .stDeployButton {display:none;}
-    .stTextInput > div > div > input {background-color: #f0f2f6;}
+    /* تحسين شكل صندوق الإدخال */
+    .stTextInput > div > div > input {
+        border-radius: 10px;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# --- القائمة الجانبية ---
+# --- القائمة الجانبية (Sidebar) ---
 with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/3094/3094851.png", width=80)
-    st.title("منصة قرار")
-    st.caption("حوّل بياناتك إلى أرباح 🚀")
+    st.markdown("### 📊 منصة قرار")
+    st.caption("من بيانات صامتة.. إلى قرارات ناطقة")
     
     st.markdown("---")
-    st.info("🔒 النسخة الآمنة V1.0")
-    st.markdown("© 2024 Dr. Reham Morsy")
+    
+    # 🔘 التحكم في الوضع
+    st.markdown("**⚙️ اختر الوضع:**")
+    mode = st.radio("", ["🏠 الصفحة الرئيسية", "⚡ تجربة النظام (Demo)", "📂 رفع وتحليل ملفي"], index=0)
+    
+    st.markdown("---")
+    
+    # 📞 قسم التواصل (مهم جداً للعملاء)
+    st.header("📞 تواصل معنا")
+    st.info("لطلب تصميم نظام مخصص لشركتك:")
+    
+    # روابط تواصل احترافية
+    st.markdown("""
+    <div style='display: flex; flex-direction: column; gap: 10px;'>
+        <a href='https://www.linkedin.com/in/reham-morsy-45b61a192/' target='_blank' style='text-decoration: none;'>
+            <button style='width: 100%; background-color: #0077B5; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer;'>
+                LinkedIn Profile 🔗
+            </button>
+        </a>
+        <a href='mailto:riham@example.com' style='text-decoration: none;'>
+            <button style='width: 100%; background-color: #333; color: white; border: none; padding: 8px; border-radius: 5px; cursor: pointer;'>
+                 Email Me 📧
+            </button>
+        </a>
+    </div>
+    """, unsafe_allow_html=True)
+    st.markdown("---")
+    st.caption("© 2024 Dr. Reham Morsy")
 
-# --- الواجهة الرئيسية ---
-st.title("📊 منصة تحليل المبيعات الذكية")
-st.markdown("قم برفع ملف مبيعاتك، وسيقوم النظام باستخراج الأخطاء والفرص الضائعة فوراً.")
-
-# متغير لتخزين حالة الدخول
+# --- المتغيرات العامة ---
 if 'email_submitted' not in st.session_state:
     st.session_state.email_submitted = False
 
-# 1. منطقة رفع الملف (مفتوحة للجميع)
-uploaded_file = st.file_uploader("📥 الخطوة 1: ارفع ملف البيانات (Excel/CSV)", type=['xlsx', 'csv'])
-
-df = None
-
-# قراءة الملف
-if uploaded_file:
-    try:
-        if uploaded_file.name.endswith('.csv'):
-            df = pd.read_csv(uploaded_file)
-        else:
-            df = pd.read_excel(uploaded_file)
+# --- الصفحة 1: الواجهة الرئيسية (Landing Page) ---
+if mode == "🏠 الصفحة الرئيسية":
+    col1, col2 = st.columns([1, 1])
+    with col1:
+        st.title("حوّل فوضى الأرقام.. إلى استراتيجيات واضحة 🚀")
+        st.markdown("""
+        ### هل تعاني من تكدس ملفات الإكسيل؟
+        منصة **قرار** تساعدك على فهم مبيعاتك، مخزونك، وأداء موظفيك في لوحة تحكم واحدة.
         
-        # إظهار معاينة صغيرة فقط (للتشويق)
-        st.success("✅ تم قراءة الملف بنجاح! يحتوي على {} صفاً.".format(len(df)))
-        st.write("🔎 **معاينة سريعة للبيانات:**")
-        st.dataframe(df.head(3)) # عرض أول 3 صفوف فقط
-        
-    except Exception as e:
-        st.error("حدث خطأ في قراءة الملف. تأكد أنه سليم.")
-
-# 2. بوابة الإيميل (The Gate)
-if df is not None:
-    st.markdown("---")
+        **لماذا تختار قرار؟**
+        * ✅ تحليل فوري بدون خبرة تقنية.
+        * ✅ رسوم بيانية تفاعلية.
+        * ✅ كشف الفرص الضائعة.
+        """)
+        st.warning("👈 ابدأ باختيار (تجربة النظام) أو (رفع ملف) من القائمة الجانبية.")
     
-    # إذا لم يسجل الدخول بعد
-    if not st.session_state.email_submitted:
-        col1, col2 = st.columns([2, 1])
-        with col1:
-            st.warning("🔒 **للحصول على التقرير التحليلي الكامل والرسوم البيانية:**")
-            st.markdown("يرجى تسجيل بريدك الإلكتروني لفتح قفل الداشبورد.")
+    with col2:
+        # صورة تعبيرية للواجهة
+        st.image("https://images.unsplash.com/photo-1551288049-bebda4e38f71?q=80&w=2070&auto=format&fit=crop", caption="شكل التقارير التي ستحصل عليها")
+
+
+# --- الصفحة 2: الديمو (مفتوح للجميع للإبهار) ---
+elif mode == "⚡ تجربة النظام (Demo)":
+    st.title("⚡ تجربة حية وتفاعلية")
+    st.markdown("هذه بيانات وهمية لتجربة سرعة النظام.")
+    
+    # بيانات وهمية
+    data = {
+        'الفرع': ['الرياض', 'جدة', 'الدمام', 'مكة', 'الخبر'] * 20,
+        'المبيعات': [5000, 3000, 1500, 800, 200] * 20,
+        'المنتج': ['A', 'B', 'C', 'D', 'E'] * 20
+    }
+    df_demo = pd.DataFrame(data)
+    
+    # فلتر تفاعلي
+    city = st.selectbox("📍 اختر الفرع لتصفية البيانات:", ["الكل"] + list(df_demo['الفرع'].unique()))
+    if city != "الكل":
+        df_demo = df_demo[df_demo['الفرع'] == city]
+        
+    # رسم بياني
+    fig = px.bar(df_demo, x='الفرع', y='المبيعات', color='المنتج', title="توزيع المبيعات")
+    st.plotly_chart(fig, use_container_width=True)
+
+
+# --- الصفحة 3: رفع الملف (محمية ببوابة الإيميل) ---
+elif mode == "📂 رفع وتحليل ملفي":
+    st.title("📂 تحليل البيانات الخاص")
+    
+    uploaded_file = st.file_uploader("ارفع ملف مبيعاتك (Excel أو CSV)", type=['xlsx', 'csv'])
+    
+    if uploaded_file:
+        # قراءة الملف
+        try:
+            if uploaded_file.name.endswith('.csv'):
+                df = pd.read_csv(uploaded_file)
+            else:
+                df = pd.read_excel(uploaded_file)
+                
+            st.success("✅ تم استلام الملف بنجاح!")
             
-            with st.form("lead_form"):
-                name = st.text_input("الاسم الكريم:")
-                email = st.text_input("البريد الإلكتروني للعمل:")
-                phone = st.text_input("رقم الواتساب (اختياري):")
+            # --- بوابة القفل (The Gate) ---
+            if not st.session_state.email_submitted:
+                st.markdown("---")
+                col_gate1, col_gate2 = st.columns([2, 1])
+                with col_gate1:
+                    st.warning("🔒 **هذا التقرير محمي.**")
+                    st.markdown("للحفاظ على خصوصية بياناتك وعرض التقرير الاستراتيجي الكامل، يرجى تسجيل بياناتك.")
+                    
+                    with st.form("gate_form"):
+                        name = st.text_input("الاسم:")
+                        email = st.text_input("البريد الإلكتروني:")
+                        submit = st.form_submit_button("🔓 فتح التقرير الآن")
+                        
+                        if submit:
+                            if "@" in email:
+                                st.session_state.email_submitted = True
+                                st.session_state.user_name = name
+                                st.balloons()
+                                st.rerun()
+                            else:
+                                st.error("يرجى كتابة بريد صحيح")
+            
+            # --- عرض الداشبورد (بعد الفتح) ---
+            else:
+                st.info(f"مرحباً {st.session_state.user_name}، إليك تحليل بياناتك 👇")
                 
-                submitted = st.form_submit_button("🔓 فتح التحليل الآن")
+                # KPIs
+                total = df.select_dtypes(include=['number']).iloc[:, 0].sum()
+                st.metric("إجمالي القيمة", f"{total:,.0f}")
                 
-                if submitted:
-                    if email and "@" in email:
-                        st.session_state.email_submitted = True
-                        st.session_state.user_email = email
-                        st.session_state.user_name = name
-                        st.balloons()
-                        st.rerun() # إعادة تحميل الصفحة لفتح القفل
-                    else:
-                        st.error("يرجى كتابة بريد إلكتروني صحيح.")
-    
-    # 3. عرض الداشبورد (فقط بعد التسجيل)
-    else:
-        st.success(f"مرحباً بك يا {st.session_state.user_name} 👋 | تم فتح التقرير الكامل.")
-        
-        # --- منطقة التحليل (نفس الكود السابق) ---
-        total_sales = df.select_dtypes(include=['number']).iloc[:, 0].sum()
-        count_ops = len(df)
-        
-        # KPIs
-        k1, k2, k3 = st.columns(3)
-        k1.metric("إجمالي المبيعات", f"{total_sales:,.0f}", "مكتمل")
-        k2.metric("عدد العمليات", count_ops)
-        k3.metric("حالة البيانات", "نشطة ✅")
-        
-        # Charts
-        c1, c2 = st.columns(2)
-        cat_cols = df.select_dtypes(include=['object']).columns
-        num_cols = df.select_dtypes(include=['number']).columns
-        
-        with c1:
-            if len(cat_cols) > 0:
-                st.subheader("تحليل الأداء")
-                fig = px.bar(df, x=cat_cols[0], y=num_cols[0] if len(num_cols)>0 else df.index)
-                st.plotly_chart(fig, use_container_width=True)
+                # Charts
+                num_cols = df.select_dtypes(include=['number']).columns
+                cat_cols = df.select_dtypes(include=['object']).columns
                 
-        with c2:
-            st.subheader("توزيع النسب")
-            if len(num_cols) > 0:
-                 fig2 = px.pie(df, values=num_cols[0], names=cat_cols[0] if len(cat_cols)>0 else None)
-                 st.plotly_chart(fig2, use_container_width=True)
+                if len(num_cols) > 0 and len(cat_cols) > 0:
+                    fig_real = px.bar(df, x=cat_cols[0], y=num_cols[0])
+                    st.plotly_chart(fig_real, use_container_width=True)
+                else:
+                    st.dataframe(df)
 
-        # رسالة في النهاية
-        st.info(f"💡 تم تسجيل دخولك بـ: {st.session_state.user_email}")
-        st.markdown("**هل تريد تحليل المزيد من الملفات؟** تواصل معنا للترقية للباقة المدفوعة.")
+        except:
+            st.error("الملف لا يحتوي على بيانات قابلة للقراءة.")
