@@ -39,7 +39,7 @@ def save_to_google_sheets(name, email):
     try:
         if "gcp_service_account" in st.secrets:
             gc = gspread.service_account_from_dict(st.secrets["gcp_service_account"])
-            # هنا التعديل: الاسم بدون مسافات
+            # اسم الملف مطابق لما أنشأتِه في جوجل درايف
             sh = gc.open("QararLeads")
             worksheet = sh.sheet1
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -102,51 +102,4 @@ elif mode == "📂 رفع وتحليل ملفي":
             if uploaded_file.name.endswith('.csv'):
                 df = pd.read_csv(uploaded_file)
             else:
-                df = pd.read_excel(uploaded_file)
-            
-            st.success("✅ تم قراءة الملف!")
-            
-            # البوابة
-            if not st.session_state.email_submitted:
-                st.markdown("---")
-                col_gate1, col_gate2 = st.columns([2, 1])
-                with col_gate1:
-                    st.warning("🔒 **التقرير محمي:** يرجى التسجيل للمتابعة.")
-                    with st.form("gate_form"):
-                        name = st.text_input("الاسم:")
-                        email = st.text_input("البريد الإلكتروني:")
-                        if st.form_submit_button("🔓 فتح التقرير"):
-                            if "@" in email:
-                                st.session_state.email_submitted = True
-                                st.session_state.user_name = name
-                                
-                                # محاولة الحفظ
-                                saved, msg = save_to_google_sheets(name, email)
-                                if saved:
-                                    st.toast("تم حفظ بياناتك بنجاح!")
-                                else:
-                                    # إظهار الخطأ إذا وجد
-                                    st.error(f"⚠️ تنبيه: لم يتم حفظ الإيميل في القائمة ({msg}) ولكن التقرير سيفتح.")
-                                
-                                st.balloons()
-                                st.rerun()
-                            else:
-                                st.error("إيميل غير صحيح")
-            else:
-                # العرض بعد الفتح
-                st.info(f"مرحباً {st.session_state.user_name}")
-                
-                # عرض مؤشرات الأداء
-                num_cols = df.select_dtypes(include=['number']).columns
-                cat_cols = df.select_dtypes(include=['object']).columns
-                
-                if len(num_cols) > 0:
-                    st.metric("الإجمالي", f"{df[num_cols[0]].sum():,.0f}")
-                
-                # زر الدفع (إضافي)
-                st.markdown("---")
-                col_p1, col_p2 = st.columns([3, 1])
-                with col_p1:
-                    st.write("💡 **هل تريد تقريراً احترافياً PDF؟** (يتضمن توصيات بالذكاء الاصطناعي)")
-                with col_p2:
-                    # رابط الدفع (يمكنك تغ
+                df = pd
