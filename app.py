@@ -27,6 +27,7 @@ st.markdown("""
     .stButton > button {
         border-radius: 10px;
         width: 100%;
+        font-weight: bold;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -38,15 +39,16 @@ def save_to_google_sheets(name, email):
     try:
         if "gcp_service_account" in st.secrets:
             gc = gspread.service_account_from_dict(st.secrets["gcp_service_account"])
-            sh = gc.open("Qarar Leads")
+            # هنا التعديل: الاسم بدون مسافات
+            sh = gc.open("QararLeads")
             worksheet = sh.sheet1
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             worksheet.append_row([name, email, current_time])
-            return True
+            return True, "تم الحفظ"
         else:
-            return False
+            return False, "المفاتيح غير موجودة"
     except Exception as e:
-        return False
+        return False, str(e)
 
 # ---------------------------------------------------------
 # 3. القائمة الجانبية
@@ -62,29 +64,13 @@ with st.sidebar:
     
     st.markdown("---")
     st.header("📞 تواصل معنا")
-    
-    # أزرار تواصل HTML
-    st.markdown("""
-    <div style='display: flex; flex-direction: column; gap: 10px;'>
-        <a href='https://www.linkedin.com/in/reham-morsy-45b61a192/' target='_blank'>
-            <button style='width: 100%; background-color: #0077B5; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;'>
-                LinkedIn 🔗
-            </button>
-        </a>
-        <a href='mailto:rehammorsy2012@gmail.com'>
-            <button style='width: 100%; background-color: #333; color: white; border: none; padding: 10px; border-radius: 5px; cursor: pointer;'>
-                 Email Me 📧
-            </button>
-        </a>
-    </div>
-    """, unsafe_allow_html=True)
+    st.markdown("[LinkedIn 🔗](https://www.linkedin.com/in/reham-morsy-45b61a192/)")
     st.caption("© 2024 Dr. Reham Morsy")
 
 # ---------------------------------------------------------
 # 4. المحتوى
 # ---------------------------------------------------------
 
-# تهيئة الجلسة
 if 'email_submitted' not in st.session_state:
     st.session_state.email_submitted = False
 if 'user_name' not in st.session_state:
@@ -94,11 +80,11 @@ if 'user_name' not in st.session_state:
 if mode == "🏠 الصفحة الرئيسية":
     c1, c2 = st.columns(2)
     with c1:
-        st.title("حوّل بياناتك إلى قرارات 🚀")
+        st.title("حوّل بياناتك إلى أرباح 🚀")
         st.markdown("### منصة قرار لتحليل الأعمال")
         st.info("👈 ابدأ من القائمة الجانبية.")
     with c2:
-        st.image("https://images.unsplash.com/photo-1460925895917-afdab827c52f", caption="Dashboard")
+        st.image("https://images.unsplash.com/photo-1460925895917-afdab827c52f")
 
 # --- الديمو ---
 elif mode == "⚡ تجربة النظام (Demo)":
@@ -133,25 +119,34 @@ elif mode == "📂 رفع وتحليل ملفي":
                             if "@" in email:
                                 st.session_state.email_submitted = True
                                 st.session_state.user_name = name
-                                save_to_google_sheets(name, email)
+                                
+                                # محاولة الحفظ
+                                saved, msg = save_to_google_sheets(name, email)
+                                if saved:
+                                    st.toast("تم حفظ بياناتك بنجاح!")
+                                else:
+                                    # إظهار الخطأ إذا وجد
+                                    st.error(f"⚠️ تنبيه: لم يتم حفظ الإيميل في القائمة ({msg}) ولكن التقرير سيفتح.")
+                                
                                 st.balloons()
                                 st.rerun()
                             else:
                                 st.error("إيميل غير صحيح")
             else:
-                # العرض
+                # العرض بعد الفتح
                 st.info(f"مرحباً {st.session_state.user_name}")
+                
+                # عرض مؤشرات الأداء
                 num_cols = df.select_dtypes(include=['number']).columns
                 cat_cols = df.select_dtypes(include=['object']).columns
                 
                 if len(num_cols) > 0:
                     st.metric("الإجمالي", f"{df[num_cols[0]].sum():,.0f}")
-                    if len(cat_cols) > 0:
-                        st.plotly_chart(px.bar(df, x=cat_cols[0], y=num_cols[0]), use_container_width=True)
-                    else:
-                        st.dataframe(df)
-                else:
-                    st.dataframe(df)
-
-        except Exception as e:
-            st.error("الملف غير مدعوم")
+                
+                # زر الدفع (إضافي)
+                st.markdown("---")
+                col_p1, col_p2 = st.columns([3, 1])
+                with col_p1:
+                    st.write("💡 **هل تريد تقريراً احترافياً PDF؟** (يتضمن توصيات بالذكاء الاصطناعي)")
+                with col_p2:
+                    # رابط الدفع (يمكنك تغ
