@@ -9,7 +9,7 @@ if mode == "🏠 الصفحة الرئيسية":
     
     with col_profile:
         # يمكنك استبدال الرابط برابط صورتك الحقيقية لاحقاً
-        st.image("https://cdn-icons-png.flaticon.com/512/4140/4140048.png", width=180)
+        st.image("صورتي.png", width=180)
         st.caption("د. ريهام مرسي")
     
     with col_bio:
