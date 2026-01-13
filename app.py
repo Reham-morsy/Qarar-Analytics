@@ -18,26 +18,18 @@ st.markdown("""
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 html, body, [class*="css"] { font-family: 'Cairo', sans-serif; }
 
-/* تنسيق كروت الخدمات */
 .service-box {
-    background-color: white; 
-    padding: 20px;
-    border-radius: 15px; 
-    text-align: center;
+    background-color: white; padding: 20px;
+    border-radius: 15px; text-align: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
     border-top: 5px solid #2E86C1;
-    height: 200px; 
-    margin-bottom: 20px;
+    height: 200px; margin-bottom: 20px;
 }
-
-/* تنسيق الهيرو */
 .hero-box {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     padding: 30px; border-radius: 20px;
     margin-bottom: 30px; text-align: right; direction: rtl;
 }
-
-/* الفوتر */
 .footer {
     position: fixed; left: 0; bottom: 0; width: 100%;
     background-color: #f1f1f1; color: #555; 
@@ -61,26 +53,27 @@ def save_data(n, e):
         return False
     except:
         return False
-# --- 4. القائمة الجانبية ---
+
+# --- 4. القائمة الجانبية (تم التعديل هنا) ---
 with st.sidebar:
-    # عرض اللوجو الجديد
+    # عرض اللوجو
     if os.path.exists("logo.png"):
-        st.image("logo.png", use_column_width=True) # سيأخذ عرض القائمة تلقائياً
+        st.image("logo.png", use_column_width=True)
     else:
-        st.header("💎 Qarar") # بديل مؤقت لو الصورة مش موجودة
-        
+        st.image("https://cdn-icons-png.flaticon.com/512/3094/3094851.png", width=80)
+    
+    # --- هنا تمت إضافة الاسم تحت اللوجو ---
+    st.markdown("<h2 style='text-align: center; color: #2E86C1;'>منصة قرار</h2>", unsafe_allow_html=True)
     st.markdown("---")
     
-    # قائمة التنقل
-    nav = st.radio(
-        "القائمة:", 
-        ["🏠 الرئيسية", "⚡ ديمو", "📂 التحليل"]
-    )
-    
+    nav = st.radio("القائمة:", ["🏠 الرئيسية", "⚡ ديمو", "📂 التحليل"])
     st.markdown("---")
-    st.markdown("**تواصل معنا:**")
-    st.markdown("[LinkedIn Profile 🔗](https://www.linkedin.com/in/reham-morsy-45b61a192/)")
+    st.markdown("[LinkedIn 🔗](https://www.linkedin.com/in/reham-morsy-45b61a192/)")
     st.caption("© 2026 Dr. Reham Morsy")
+
+if 'auth' not in st.session_state: st.session_state.auth = False
+if 'user' not in st.session_state: st.session_state.user = "Guest"
+
 # --- 5. المحتوى ---
 
 # ==========================
@@ -88,7 +81,6 @@ with st.sidebar:
 # ==========================
 if nav == "🏠 الرئيسية":
     
-    # 1. الهيرو سكشن
     with st.container():
         st.markdown('<div class="hero-box">', unsafe_allow_html=True)
         c1, c2 = st.columns([1, 3])
@@ -103,7 +95,6 @@ if nav == "🏠 الرئيسية":
             st.write("أساعد الشركات على تحويل البيانات إلى قرارات مربحة.")
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # 2. الخدمات
     st.markdown("### 🚀 خدماتنا المتميزة")
     col1, col2, col3 = st.columns(3)
     
@@ -136,29 +127,22 @@ if nav == "🏠 الرئيسية":
 
     st.write("---")
 
-    # 3. الخبرة
     st.markdown("### 🎓 رحلة العلم والخبرة")
     e1, e2, e3, e4 = st.columns(4)
-    
     with e1:
         st.success("🏗️ **2013**")
         st.write("بكالوريوس إدارة أعمال")
-        
     with e2:
         st.info("📈 **2017**")
         st.write("ماجستير في التمويل")
-        
     with e3:
         st.warning("🏛️ **الأكاديمية**")
         st.write("محاضر جامعي وباحث")
-        
     with e4:
         st.error("💼 **2020**")
         st.write("استشارات مالية للشركات")
 
-    # 4. الفوتر
     st.markdown('<div class="footer">جميع الحقوق محفوظة لمنصة قرار 2026 | تطوير د. ريهام مرسي</div>', unsafe_allow_html=True)
-
 
 # ==========================
 # ⚡ ديمو
@@ -167,7 +151,6 @@ elif nav == "⚡ ديمو":
     st.header("⚡ تجربة حية")
     data = {'الفرع': ['الرياض', 'جدة']*5, 'المبيعات': [45000, 32000]*5}
     st.plotly_chart(px.bar(pd.DataFrame(data), x='الفرع', y='المبيعات'))
-
 
 # ==========================
 # 📂 التحليل
@@ -216,9 +199,5 @@ elif nav == "📂 التحليل":
                     st.plotly_chart(px.bar(df, x=df.columns[0], y=v1))
                 else:
                     st.dataframe(df)
-        
-        # --- (مهم جداً: هذا هو الجزء الذي كان ناقصاً) ---
         except Exception as e:
-            st.error("حدث خطأ في قراءة الملف")
-            
-# --- نهاية الملف ---
+            st.error("خطأ في الملف")
