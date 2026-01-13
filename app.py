@@ -5,7 +5,7 @@ import gspread
 from datetime import datetime
 import os
 
-# --- 1. الإعدادات ---
+# --- 1. إعدادات الصفحة ---
 st.set_page_config(
     page_title="Qarar | قرار",
     page_icon="💎",
@@ -85,7 +85,7 @@ if nav == "🏠 الرئيسية":
         c1, c2 = st.columns([1, 3])
         
         with c1:
-            # محاولة عرض الصورة (آمنة جداً)
+            # محاولة عرض الصورة (آمنة)
             img_shown = False
             if os.path.exists("profile.png"):
                 try:
@@ -102,3 +102,45 @@ if nav == "🏠 الرئيسية":
             st.markdown("#### شريكك الاستراتيجي في تحليل الأعمال")
             st.write("أساعد الشركات على تحويل البيانات إلى قرارات مربحة.")
         st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown("### 🚀 خدماتنا المتميزة")
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        <div class="service-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/2910/2910791.png" width="50">
+            <h3>تحليل مالي</h3>
+            <p>لوحات بيانات تفاعلية تكشف مسار الربحية.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class="service-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/1570/1570992.png" width="50">
+            <h3>دراسات جدوى</h3>
+            <p>حساب ROI وتقييم المخاطر بدقة عالية.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with col3:
+        st.markdown("""
+        <div class="service-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/1624/1624568.png" width="50">
+            <h3>استشارات نمو</h3>
+            <p>خطط لتقليل الهدر ورفع كفاءة التشغيل.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.write("---")
+
+    st.markdown("### 🎓 رحلة العلم والخبرة")
+    e1, e2, e3, e4 = st.columns(4)
+    with e1:
+        st.success("🏗️ **2013**")
+        st.write("بكالوريوس إدارة أعمال")
+    with e2:
+        st.info("📈 **2017**")
+        st.write("ماجستير في التمويل")
+    with e3:
