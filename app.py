@@ -10,20 +10,43 @@ import os
 # ---------------------------------------------------------
 st.set_page_config(page_title="Qarar | قرار", page_icon="💎", layout="wide")
 
-# تنسيق CSS
+# تنسيق CSS (احترافي جداً)
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 html, body, [class*="css"] { font-family: 'Cairo', sans-serif; }
 #MainMenu {visibility: hidden;}
 footer {visibility: hidden;}
+
+/* تصميم بطاقة الخدمات */
 .service-card {
-    background-color: #f8f9fa; padding: 20px; border-radius: 10px;
-    border-left: 5px solid #2E86C1; text-align: center; margin-bottom: 10px; height: 160px;
+    background-color: white; 
+    padding: 20px; 
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+    border-top: 5px solid #2E86C1; 
+    text-align: center; 
+    margin-bottom: 20px; 
+    height: 180px;
+    transition: transform 0.3s;
 }
+.service-card:hover { transform: translateY(-5px); }
+
+/* تصميم الافتتاحية (Hero Section) */
+.hero-container {
+    background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+    padding: 40px;
+    border-radius: 20px;
+    margin-bottom: 30px;
+    text-align: right;
+    direction: rtl;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+}
+
 .footer {
     position: fixed; left: 0; bottom: 0; width: 100%;
-    background-color: #f1f1f1; color: #555; text-align: center; padding: 10px; z-index: 100;
+    background-color: #f8f9fa; color: #555; text-align: center; padding: 10px; z-index: 100;
+    font-size: 12px; border-top: 1px solid #ddd;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -48,7 +71,6 @@ def save_to_google_sheets(name, email):
 # 3. القائمة الجانبية
 # ---------------------------------------------------------
 with st.sidebar:
-    # محاولة عرض الشعار
     try:
         st.image("https://cdn-icons-png.flaticon.com/512/3094/3094851.png", width=80)
     except:
@@ -71,45 +93,72 @@ if 'user_name' not in st.session_state: st.session_state.user_name = "Guest"
 
 # === الرئيسية ===
 if mode == "🏠 الصفحة الرئيسية":
-    st.markdown("<h1 style='text-align: center; color: #2E86C1;'>منصة قرار 🎯</h1>", unsafe_allow_html=True)
-    st.markdown("<h3 style='text-align: center;'>عندما تتحدث الأرقام.. نصنع نحن القرار</h3>", unsafe_allow_html=True)
-    st.write("---")
     
-    c1, c2 = st.columns([1, 2.5])
-    with c1:
-        # كود الصورة الآمن
-        image_shown = False
-        if os.path.exists("profile.png"):
-            try:
-                st.image("profile.png", width=200)
-                image_shown = True
-            except:
-                pass
+    # --- التصميم الجديد للافتتاحية (Hero Section) ---
+    with st.container():
+        st.markdown('<div class="hero-container">', unsafe_allow_html=True)
         
-        if not image_shown:
-            st.image("https://cdn-icons-png.flaticon.com/512/4140/4140048.png", width=180)
+        col_hero1, col_hero2 = st.columns([1, 3])
+        
+        with col_hero1:
+            # كود الصورة الآمن (مع بديل نسائي محترم)
+            image_shown = False
+            if os.path.exists("profile.png"):
+                try:
+                    st.image("profile.png", width=200)
+                    image_shown = True
+                except:
+                    pass
             
-        st.caption("د. ريهام مرسي")
+            if not image_shown:
+                # صورة بديلة (سيدة أعمال) بدل الرجل
+                st.image("https://cdn-icons-png.flaticon.com/512/949/949635.png", width=180)
+        
+        with col_hero2:
+            st.markdown("""
+            <h1 style='color: #2E86C1; margin-bottom: 0;'>د. ريهام مرسي</h1>
+            <h4 style='color: #555; margin-top: 5px;'>شريكك الاستراتيجي في تحليل الأعمال والمالية</h4>
+            <p style='font-size: 18px; line-height: 1.6;'>
+            أساعد الشركات ورواد الأعمال على تحويل جداول البيانات المعقدة إلى 
+            <b>قرارات استراتيجية مربحة</b>. <br>
+            خبرة تجمع بين الدقة الأكاديمية والعمل الميداني لتحقيق أعلى عائد على الاستثمار (ROI).
+            </p>
+            """, unsafe_allow_html=True)
+            
+        st.markdown('</div>', unsafe_allow_html=True)
 
-    with c2:
-        st.markdown("### مرحباً، أنا د. ريهام مرسي 👋\n**شريكك الاستراتيجي في تحليل الأعمال والمالية**\n\nأؤمن أن خلف كل رقم في شركتك قصة، وخلف كل جدول بيانات فرصة ضائعة أو ربح منتظر. دوري ترجمتها للغة القرارات.")
-
-    st.write("---")
-    st.subheader("🛠️ خدماتنا")
-    s1, s2, s3 = st.columns(3)
-    s1.markdown('<div class="service-card"><h3>📊 تحليل مالي</h3><p>داشبورد تفاعلية تكشف مواطن الربح والخسارة.</p></div>', unsafe_allow_html=True)
-    s2.markdown('<div class="service-card"><h3>💡 دراسات جدوى</h3><p>تقييم المشاريع وحساب العائد المتوقع ROI بدقة.</p></div>', unsafe_allow_html=True)
-    s3.markdown('<div class="service-card"><h3>📉 خفض التكاليف</h3><p>استراتيجيات ذكية لتقليل الهدر ورفع الكفاءة.</p></div>', unsafe_allow_html=True)
-
-    st.write("---")
-    st.subheader("🎓 الخبرات")
-    e1, e2, e3, e4 = st.columns(4)
-    e1.success("🏗️ **2013**"); e1.write("بكالوريوس إدارة.")
-    e2.info("📈 **2017**"); e2.write("ماجستير تمويل.")
-    e3.warning("🏛️ **الأكاديمية**"); e3.write("محاضر جامعي.")
-    e4.error("💼 **2020**"); e4.write("استشارات مالية.")
+    # --- الخدمات ---
+    st.markdown("<h3 style='text-align: center; color: #333;'>🚀 خدماتنا المتميزة</h3><br>", unsafe_allow_html=True)
     
-    st.markdown('<div class="footer"><p>© 2026 جميع الحقوق محفوظة لمنصة قرار</p></div>', unsafe_allow_html=True)
+    s1, s2, s3 = st.columns(3)
+    s1.markdown("""
+    <div class="service-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/2910/2910791.png" width="50">
+        <h3>تحليل مالي متقدم</h3>
+        <p style='font-size:14px; color:#666;'>لوحات بيانات تفاعلية تكشف خبايا الأرقام.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    s2.markdown("""
+    <div class="service-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/1570/1570992.png" width="50">
+        <h3>دراسات جدوى</h3>
+        <p style='font-size:14px; color:#666;'>تقييم دقيق للمخاطر والعوائد قبل البدء.</p>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    s3.markdown("""
+    <div class="service-card">
+        <img src="https://cdn-icons-png.flaticon.com/512/1624/1624568.png" width="50">
+        <h3>استشارات النمو</h3>
+        <p style='font-size:14px; color:#666;'>خطط عملية لخفض التكاليف وزيادة الربحية.</p>
+    </div>
+    """, unsafe_allow_html=True)
+
+    st.write("---")
+    
+    # --- الفوتر ---
+    st.markdown('<div class="footer"><p>© 2026 جميع الحقوق محفوظة لمنصة قرار | تطوير: د. ريهام مرسي</p></div>', unsafe_allow_html=True)
 
 # === الديمو ===
 elif mode == "⚡ تجربة النظام (Demo)":
@@ -120,52 +169,4 @@ elif mode == "⚡ تجربة النظام (Demo)":
 # === التحليل ===
 elif mode == "📂 رفع وتحليل ملفي":
     st.title("📂 تحليل البيانات الخاص")
-    uploaded_file = st.file_uploader("ارفع ملف Excel/CSV", type=['xlsx', 'csv'])
-    
-    if uploaded_file:
-        try:
-            if uploaded_file.name.endswith('.csv'): df = pd.read_csv(uploaded_file)
-            else: df = pd.read_excel(uploaded_file)
-            st.success("✅ تم قراءة الملف")
-
-            if not st.session_state.email_submitted:
-                st.markdown("---")
-                c_gate1, c_gate2 = st.columns([2, 1])
-                with c_gate1:
-                    st.warning("🔒 يرجى التسجيل للمتابعة.")
-                    with st.form("gate_form"):
-                        name = st.text_input("الاسم:")
-                        email = st.text_input("البريد الإلكتروني:")
-                        if st.form_submit_button("🔓 فتح التقرير"):
-                            if "@" in email:
-                                st.session_state.email_submitted = True
-                                st.session_state.user_name = name
-                                save_to_google_sheets(name, email)
-                                st.rerun()
-                            else: st.error("إيميل غير صحيح")
-            else:
-                st.info(f"مرحباً {st.session_state.user_name}")
-                num_cols = df.select_dtypes(include=['number']).columns
-                
-                if len(num_cols) > 0:
-                    st.markdown("### 💰 مؤشرات الربحية")
-                    sel1, sel2 = st.columns(2)
-                    rev_col = sel1.selectbox("المبيعات:", num_cols, index=0)
-                    cost_col = sel2.selectbox("التكلفة:", num_cols, index=(1 if len(num_cols)>1 else 0))
-                    
-                    rev = df[rev_col].sum()
-                    cost = df[cost_col].sum()
-                    profit = rev - cost
-                    
-                    k1, k2, k3 = st.columns(3)
-                    k1.metric("المبيعات", f"{rev:,.0f}")
-                    k2.metric("التكاليف", f"{cost:,.0f}")
-                    k3.metric("الربح", f"{profit:,.0f}")
-                    
-                    st.plotly_chart(px.bar(df, x=df.columns[0], y=rev_col), use_container_width=True)
-                else:
-                    st.dataframe(df)
-        except Exception as e:
-            st.error("حدث خطأ في قراءة الملف")
-            
-# --- نهاية الكود ---
+    uploaded_file = st.file_uploader("ارفع
