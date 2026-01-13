@@ -6,7 +6,7 @@ from datetime import datetime
 import os
 
 # ---------------------------------------------------------
-# 1. إعدادات الصفحة والتصميم
+# 1. إعدادات الصفحة
 # ---------------------------------------------------------
 st.set_page_config(
     page_title="Qarar | قرار",
@@ -15,29 +15,13 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# CSS للتجميل والخطوط
+# CSS
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
-    
-    html, body, [class*="css"] {
-        font-family: 'Cairo', sans-serif;
-    }
+    html, body, [class*="css"] { font-family: 'Cairo', sans-serif; }
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
-    .stDeployButton {display:none;}
-    
-    .stTextInput > div > div > input {
-        border-radius: 10px;
-        border: 1px solid #ddd;
-    }
-    .stButton > button {
-        border-radius: 10px;
-        width: 100%;
-        font-weight: bold;
-        background-color: #2E86C1;
-        color: white;
-    }
     .service-card {
         background-color: #f8f9fa;
         padding: 20px;
@@ -62,7 +46,7 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# 2. دالة الربط (Backend)
+# 2. دالة الربط (Google Sheets)
 # ---------------------------------------------------------
 def save_to_google_sheets(name, email):
     try:
@@ -85,11 +69,7 @@ with st.sidebar:
     st.image("https://cdn-icons-png.flaticon.com/512/3094/3094851.png", width=80)
     st.title("منصة قرار")
     st.markdown("---")
-    
-    mode = st.radio("القائمة:", 
-                    ["🏠 الصفحة الرئيسية", "⚡ تجربة النظام (Demo)", "📂 رفع وتحليل ملفي"], 
-                    index=0)
-    
+    mode = st.radio("القائمة:", ["🏠 الصفحة الرئيسية", "⚡ تجربة النظام (Demo)", "📂 رفع وتحليل ملفي"], index=0)
     st.markdown("---")
     st.header("📞 تواصل معنا")
     st.markdown("[LinkedIn 🔗](https://www.linkedin.com/in/reham-morsy-45b61a192/)")
@@ -98,7 +78,6 @@ with st.sidebar:
 # ---------------------------------------------------------
 # 4. المحتوى الرئيسي
 # ---------------------------------------------------------
-
 if 'email_submitted' not in st.session_state:
     st.session_state.email_submitted = False
 if 'user_name' not in st.session_state:
@@ -110,7 +89,6 @@ if mode == "🏠 الصفحة الرئيسية":
     st.write("---")
 
     col_profile, col_bio = st.columns([1, 2.5])
-    
     with col_profile:
         if os.path.exists("profile.png"):
             st.image("profile.png", width=200)
@@ -124,7 +102,6 @@ if mode == "🏠 الصفحة الرئيسية":
         st.markdown("""
         ### مرحباً، أنا د. ريهام مرسي 👋
         **شريكك الاستراتيجي في تحليل الأعمال والمالية**
-        
         أؤمن أن خلف كل رقم في شركتك قصة، وخلف كل جدول بيانات فرصة ضائعة أو ربح منتظر. 
         دوري ليس مجرد حساب الأرقام، بل **ترجمتها إلى لغة يفهمها صناع القرار**.
         """)
@@ -132,33 +109,65 @@ if mode == "🏠 الصفحة الرئيسية":
 
     st.write("---")
 
-    # 1. قسم الخدمات
+    # الخدمات
     st.subheader("🛠️ ماذا نقدم لك؟")
     s1, s2, s3 = st.columns(3)
     with s1:
-        st.markdown("""
-        <div class="service-card">
-        <h3>📊 تحليل مالي</h3>
-        <p>تحويل البيانات إلى داشبورد تفاعلية تكشف مواطن الربح والخسارة.</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div class="service-card"><h3>📊 تحليل مالي</h3><p>تحويل البيانات إلى داشبورد.</p></div>', unsafe_allow_html=True)
     with s2:
-        st.markdown("""
-        <div class="service-card">
-        <h3>💡 دراسات جدوى</h3>
-        <p>تقييم المشاريع الجديدة وحساب العائد المتوقع (ROI) بدقة.</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div class="service-card"><h3>💡 دراسات جدوى</h3><p>تقييم المشاريع وحساب ROI.</p></div>', unsafe_allow_html=True)
     with s3:
-        st.markdown("""
-        <div class="service-card">
-        <h3>📉 خفض التكاليف</h3>
-        <p>استراتيجيات ذكية لتقليل الهدر المالي ورفع كفاءة التشغيل.</p>
-        </div>
-        """, unsafe_allow_html=True)
+        st.markdown('<div class="service-card"><h3>📉 خفض التكاليف</h3><p>استراتيجيات لتقليل الهدر.</p></div>', unsafe_allow_html=True)
 
     st.write("---")
 
-    # قسم الرحلة والخبرة
+    # الخبرة (هنا كان الخطأ)
     st.subheader("🎓 رحلة العلم والخبرة")
-    c1, c2, c3, c4 =
+    c1, c2, c3, c4 = st.columns(4)  # تأكدي أن هذا السطر كامل
+    with c1:
+        st.success("🏗️ **2013**")
+        st.write("بكالوريوس (جيد جداً).")
+    with c2:
+        st.info("📈 **2017**")
+        st.write("ماجستير تمويل.")
+    with c3:
+        st.warning("🏛️ **الأكاديمية**")
+        st.write("محاضر جامعي.")
+    with c4:
+        st.error("💼 **2020**")
+        st.write("استشارات مالية.")
+
+    st.write("---")
+    
+    # الأسئلة الشائعة
+    st.subheader("❓ أسئلة شائعة")
+    with st.expander("هل بياناتي آمنة؟"):
+        st.write("نعم، لا نقوم بتخزين أي ملفات.")
+    with st.expander("كيف أحصل على استشارة؟"):
+        st.write("تواصل معنا عبر LinkedIn.")
+
+    # الفوتر
+    st.markdown('<div class="footer"><p>© 2026 جميع الحقوق محفوظة لمنصة قرار</p></div>', unsafe_allow_html=True)
+
+# --- ⚡ الديمو ---
+elif mode == "⚡ تجربة النظام (Demo)":
+    st.title("⚡ تجربة حية")
+    data = {'المدينة': ['الرياض', 'جدة', 'الدمام']*5, 'المبيعات': [5000, 3000, 4500]*5}
+    st.plotly_chart(px.bar(pd.DataFrame(data), x='المدينة', y='المبيعات'), use_container_width=True)
+
+# --- 📂 التحليل ---
+elif mode == "📂 رفع وتحليل ملفي":
+    st.title("📂 تحليل البيانات الخاص")
+    uploaded_file = st.file_uploader("ارفع ملف Excel/CSV", type=['xlsx', 'csv'])
+    
+    if uploaded_file:
+        try:
+            if uploaded_file.name.endswith('.csv'):
+                df = pd.read_csv(uploaded_file)
+            else:
+                df = pd.read_excel(uploaded_file)
+            st.success("✅ تم القراءة")
+
+            if not st.session_state.email_submitted:
+                st.markdown("---")
+                st.warning
