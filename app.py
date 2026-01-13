@@ -55,7 +55,6 @@ def save_data(n, e):
 
 # --- 4. القائمة الجانبية ---
 with st.sidebar:
-    # اللوجو
     if os.path.exists("logo.png"):
         st.image("logo.png", use_column_width=True)
     else:
@@ -64,13 +63,13 @@ with st.sidebar:
     st.markdown("<h2 style='text-align: center; color: #2E86C1;'>منصة قرار</h2>", unsafe_allow_html=True)
     st.markdown("---")
     
-    # القائمة (تم كتابتها عمودياً لتجنب الخطأ)
-    menu_options = [
+    # القائمة العمودية
+    menu = [
         "🏠 الرئيسية",
         "⚡ ديمو",
         "📂 التحليل"
     ]
-    nav = st.radio("القائمة:", menu_options)
+    nav = st.radio("القائمة:", menu)
     
     st.markdown("---")
     st.markdown("[LinkedIn 🔗](https://www.linkedin.com/in/reham-morsy-45b61a192/)")
@@ -155,4 +154,70 @@ if nav == "🏠 الرئيسية":
 elif nav == "⚡ ديمو":
     st.header("⚡ تجربة حية")
     data = {'الفرع': ['الرياض', 'جدة']*5, 'المبيعات': [45000, 32000]*5}
-    st.plotly_chart(px.
+    # تم فصل الرسم البياني لتجنب الخطأ
+    fig = px.bar(
+        pd.DataFrame(data), 
+        x='الفرع', 
+        y='المبيعات'
+    )
+    st.plotly_chart(fig)
+
+# === التحليل ===
+elif nav == "📂 التحليل":
+    st.header("📂 تحليل البيانات الخاص")
+    
+    up_file = st.file_uploader(
+        "ارفع ملف Excel/CSV",
+        type=['xlsx', 'csv']
+    )
+    
+    if up_file is not None:
+        try:
+            if up_file.name.endswith('.csv'):
+                df = pd.read_csv(up_file)
+            else:
+                df = pd.read_excel(up_file)
+            st.success("✅ تم القراءة")
+            
+            if not st.session_state.auth:
+                st.warning("🔒 يرجى التسجيل للمتابعة")
+                with st.form("log"):
+                    n = st.text_input("الاسم")
+                    e = st.text_input("الايميل")
+                    if st.form_submit_button("عرض"):
+                        if "@" in e:
+                            st.session_state.auth = True
+                            st.session_state.user = n
+                            save_data(n, e)
+                            st.rerun()
+            else:
+                st.info(f"أهلاً {st.session_state.user}")
+                nums = df.select_dtypes(include=['number']).columns
+                
+                if len(nums) > 0:
+                    st.subheader("💰 حاسبة الربحية")
+                    c1, c2 = st.columns(2)
+                    v1 = c1.selectbox("المبيعات:", nums, index=0)
+                    idx = 1 if len(nums) > 1 else 0
+                    v2 = c2.selectbox("التكلفة:", nums, index=idx)
+                    
+                    rev = df[v1].sum()
+                    cost = df[v2].sum()
+                    prof = rev - cost
+                    
+                    k1, k2, k3 = st.columns(3)
+                    k1.metric("المبيعات", f"{rev:,.0f}")
+                    k2.metric("التكاليف", f"{cost:,.0f}")
+                    k3.metric("الربح", f"{prof:,.0f}")
+                    
+                    # تم فصل الرسم البياني هنا أيضاً
+                    fig_chart = px.bar(
+                        df, 
+                        x=df.columns[0], 
+                        y=v1
+                    )
+                    st.plotly_chart(fig_chart)
+                else:
+                    st.dataframe(df)
+        except Exception as e:
+            st.error("خطأ في الملف")
