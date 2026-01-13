@@ -76,7 +76,7 @@ if 'email_submitted' not in st.session_state:
 if 'user_name' not in st.session_state:
     st.session_state.user_name = "Guest"
 
-# --- 🏠 الصفحة الرئيسية (التصميم الاحترافي الجديد) ---
+# --- 🏠 الصفحة الرئيسية (التصميم الاحترافي) ---
 if mode == "🏠 الصفحة الرئيسية":
     st.markdown("<h1 style='text-align: center; color: #2E86C1;'>منصة قرار: عندما تتحدث الأرقام.. نصنع نحن القرار 🎯</h1>", unsafe_allow_html=True)
     st.write("---")
@@ -84,15 +84,13 @@ if mode == "🏠 الصفحة الرئيسية":
     col_profile, col_bio = st.columns([1, 2.5])
     
     with col_profile:
-        # --- كود البحث عن الصورة (معدل) ---
-        if os.path.exists("صورتي.png"):
-            st.image("صورتي.png", width=200)
-        elif os.path.exists("صورتي . png"): # حالة المسافات
-            st.image("صورتي . png", width=200)
-        elif os.path.exists("profile.png"):
+        # البحث عن الصورة (الأولوية لـ profile.png)
+        if os.path.exists("profile.png"):
             st.image("profile.png", width=200)
+        elif os.path.exists("photo.jpg"):
+             st.image("photo.jpg", width=200)
         else:
-            # صورة افتراضية في حالة عدم العثور على أي صورة
+            # صورة افتراضية
             st.image("https://cdn-icons-png.flaticon.com/512/4140/4140048.png", width=180)
             
         st.caption("د. ريهام مرسي")
@@ -139,6 +137,7 @@ elif mode == "⚡ تجربة النظام (Demo)":
     st.write("هذا مثال لما ستحصل عليه عند رفع ملفك:")
     data = {'المدينة': ['الرياض', 'جدة', 'الدمام', 'مكة']*5, 'المبيعات': [5000, 3000, 4500, 2000]*5}
     st.plotly_chart(px.bar(pd.DataFrame(data), x='المدينة', y='المبيعات', color='المدينة'), use_container_width=True)
+
 # --- 📂 رفع وتحليل ملفي ---
 elif mode == "📂 رفع وتحليل ملفي":
     st.title("📂 تحليل البيانات الخاص")
@@ -179,6 +178,7 @@ elif mode == "📂 رفع وتحليل ملفي":
                 if len(num_cols) > 0:
                     st.metric("الإجمالي الكلي", f"{df[num_cols[0]].sum():,.0f}")
                 
+                # --- زر الدفع والخدمات ---
                 st.markdown("---")
                 col_p1, col_p2 = st.columns([3, 1])
                 with col_p1:
@@ -198,4 +198,3 @@ elif mode == "📂 رفع وتحليل ملفي":
         except Exception as e:
             st.error("حدث خطأ أثناء قراءة الملف.")
             st.error(e)
-      
