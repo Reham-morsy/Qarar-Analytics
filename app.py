@@ -6,8 +6,13 @@ from datetime import datetime
 import os
 
 # --- 1. الإعدادات ---
-st.set_page_config(page_title="Qarar | قرار", page_icon="💎", layout="wide")
+st.set_page_config(
+    page_title="Qarar | قرار",
+    page_icon="💎",
+    layout="wide"
+)
 
+# تنسيق CSS
 st.markdown("""
 <style>
     @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
@@ -50,39 +55,38 @@ with st.sidebar:
     st.markdown("[LinkedIn 🔗](https://www.linkedin.com/in/reham-morsy-45b61a192/)")
     st.caption("© 2026 Dr. Reham Morsy")
 
+# تجهيز المتغيرات
 if 'email_submitted' not in st.session_state: st.session_state.email_submitted = False
 if 'user_name' not in st.session_state: st.session_state.user_name = "Guest"
 
-# --- 4. المحتوى ---
+# --- 4. المحتوى الرئيسي ---
+
+# === الصفحة الرئيسية ===
 if mode == "🏠 الصفحة الرئيسية":
-    st.markdown("<h1 style='text-align: center; color: #2E86C1;'>منصة قرار: عندما تتحدث الأرقام.. نصنع نحن القرار 🎯</h1>", unsafe_allow_html=True)
+    st.markdown("<h1 style='text-align: center; color: #2E86C1;'>منصة قرار 🎯</h1>", unsafe_allow_html=True)
+    st.markdown("<h3 style='text-align: center;'>عندما تتحدث الأرقام.. نصنع نحن القرار</h3>", unsafe_allow_html=True)
     st.write("---")
+    
     c1, c2 = st.columns([1, 2.5])
     with c1:
-        if os.path.exists("profile.png"): st.image("profile.png", width=200)
-        else: st.image("https://cdn-icons-png.flaticon.com/512/4140/4140048.png", width=180)
+        if os.path.exists("profile.png"): 
+            st.image("profile.png", width=200)
+        else: 
+            st.image("https://cdn-icons-png.flaticon.com/512/4140/4140048.png", width=180)
         st.caption("د. ريهام مرسي")
+    
     with c2:
-        st.markdown("### مرحباً، أنا د. ريهام مرسي 👋\n**شريكك الاستراتيجي في تحليل الأعمال والمالية**\n\nأؤمن أن خلف كل رقم في شركتك قصة. دوري هو ترجمتها لقرارات.")
+        st.markdown("""
+        ### مرحباً، أنا د. ريهام مرسي 👋
+        **شريكك الاستراتيجي في تحليل الأعمال والمالية**
+        
+        أؤمن أن خلف كل رقم في شركتك قصة. دوري ليس مجرد حساب الأرقام، 
+        بل ترجمتها إلى لغة يفهمها صناع القرار.
+        """)
     
     st.write("---")
     st.subheader("🛠️ خدماتنا")
     s1, s2, s3 = st.columns(3)
     s1.markdown('<div class="service-card"><h3>📊 تحليل مالي</h3><p>داشبورد تفاعلية.</p></div>', unsafe_allow_html=True)
     s2.markdown('<div class="service-card"><h3>💡 دراسات جدوى</h3><p>حساب ROI بدقة.</p></div>', unsafe_allow_html=True)
-    s3.markdown('<div class="service-card"><h3>📉 خفض التكاليف</h3><p>رفع كفاءة التشغيل.</p></div>', unsafe_allow_html=True)
-    
-    st.write("---")
-    st.subheader("🎓 الخبرات")
-    e1, e2, e3, e4 = st.columns(4)
-    e1.success("🏗️ **2013**"); e1.write("بكالوريوس إدارة.")
-    e2.info("📈 **2017**"); e2.write("ماجستير تمويل.")
-    e3.warning("🏛️ **الأكاديمية**"); e3.write("محاضر جامعي.")
-    e4.error("💼 **2020**"); e4.write("استشارات مالية.")
-    
-    st.markdown('<div class="footer"><p>© 2026 جميع الحقوق محفوظة لمنصة قرار</p></div>', unsafe_allow_html=True)
-
-elif mode == "⚡ تجربة النظام (Demo)":
-    st.title("⚡ تجربة حية")
-    data = {'المدينة': ['الرياض', 'جدة', 'الدمام']*5, 'المبيعات': [5000, 3000, 4500]*5}
-    st.plotly_chart(px.bar(pd.DataFrame(data), x='المدينة', y='المبي
+    s3.markdown('<div class="service-card"><h3>📉 خفض التكاليف</h3><p>رفع كفاءة التشغيل.</p></div>
