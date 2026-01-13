@@ -54,15 +54,17 @@ def save_data(n, e):
     except:
         return False
 
-# --- 4. القائمة الجانبية (تم التعديل هنا) ---
+# --- 4. القائمة الجانبية ---
 with st.sidebar:
-    # عرض اللوجو
-    if os.path.exists("logo.png"):
-        st.image("logo.png", use_column_width=True)
-    else:
-        st.image("https://cdn-icons-png.flaticon.com/512/3094/3094851.png", width=80)
+    # عرض اللوجو (مع حماية ضد الأخطاء)
+    try:
+        if os.path.exists("logo.png"):
+            st.image("logo.png", use_column_width=True)
+        else:
+            st.image("https://cdn-icons-png.flaticon.com/512/3094/3094851.png", width=80)
+    except:
+        st.write("💎") # بديل نصي في حال فشل كل الصور
     
-    # --- هنا تمت إضافة الاسم تحت اللوجو ---
     st.markdown("<h2 style='text-align: center; color: #2E86C1;'>منصة قرار</h2>", unsafe_allow_html=True)
     st.markdown("---")
     
@@ -84,11 +86,22 @@ if nav == "🏠 الرئيسية":
     with st.container():
         st.markdown('<div class="hero-box">', unsafe_allow_html=True)
         c1, c2 = st.columns([1, 3])
+        
         with c1:
+            # --- كود الصورة المصفح ضد الأخطاء ---
+            image_ok = False
             if os.path.exists("profile.png"):
-                st.image("profile.png", width=180)
-            else:
+                try:
+                    st.image("profile.png", width=180)
+                    image_ok = True
+                except:
+                    pass # إذا كانت الصورة تالفة، تجاهلها
+            
+            if not image_ok:
+                # الصورة البديلة (سيدة أعمال)
                 st.image("https://cdn-icons-png.flaticon.com/512/949/949635.png", width=180)
+            # ------------------------------------
+
         with c2:
             st.markdown("## د. ريهام مرسي")
             st.markdown("#### شريكك الاستراتيجي في تحليل الأعمال")
@@ -161,43 +174,4 @@ elif nav == "📂 التحليل":
     
     if up_file:
         try:
-            if up_file.name.endswith('.csv'): df = pd.read_csv(up_file)
-            else: df = pd.read_excel(up_file)
-            st.success("✅ تم القراءة")
-            
-            if not st.session_state.auth:
-                st.warning("🔒 يرجى التسجيل للمتابعة")
-                with st.form("log"):
-                    n = st.text_input("الاسم")
-                    e = st.text_input("الايميل")
-                    if st.form_submit_button("عرض"):
-                        if "@" in e:
-                            st.session_state.auth = True
-                            st.session_state.user = n
-                            save_data(n, e)
-                            st.rerun()
-            else:
-                st.info(f"أهلاً {st.session_state.user}")
-                nums = df.select_dtypes(include=['number']).columns
-                
-                if len(nums) > 0:
-                    st.subheader("💰 حاسبة الربحية")
-                    c1, c2 = st.columns(2)
-                    v1 = c1.selectbox("المبيعات:", nums, index=0)
-                    idx = 1 if len(nums) > 1 else 0
-                    v2 = c2.selectbox("التكلفة:", nums, index=idx)
-                    
-                    rev = df[v1].sum()
-                    cost = df[v2].sum()
-                    prof = rev - cost
-                    
-                    k1, k2, k3 = st.columns(3)
-                    k1.metric("المبيعات", f"{rev:,.0f}")
-                    k2.metric("التكاليف", f"{cost:,.0f}")
-                    k3.metric("الربح", f"{prof:,.0f}")
-                    
-                    st.plotly_chart(px.bar(df, x=df.columns[0], y=v1))
-                else:
-                    st.dataframe(df)
-        except Exception as e:
-            st.error("خطأ في الملف")
+            if
