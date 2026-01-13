@@ -136,4 +136,89 @@ elif mode == "⚡ تجربة النظام (Demo)":
     st.title("⚡ تجربة حية (مثال)")
     st.write("هذا مثال لما ستحصل عليه عند رفع ملفك:")
     data = {'المدينة': ['الرياض', 'جدة', 'الدمام', 'مكة']*5, 'المبيعات': [5000, 3000, 4500, 2000]*5}
-    st.plotly_chart(px.bar(pd.DataFrame(data), x='
+    st.plotly_chart(px.bar(pd.DataFrame(data), x='المدينة', y='المبيعات', color='المدينة'), use_container_width=True)
+
+# --- 📂 رفع وتحليل ملفي (مع حاسبة الربح الجديدة) ---
+elif mode == "📂 رفع وتحليل ملفي":
+    st.title("📂 تحليل البيانات الخاص")
+    uploaded_file = st.file_uploader("ارفع ملف Excel/CSV", type=['xlsx', 'csv'])
+    
+    if uploaded_file:
+        try:
+            if uploaded_file.name.endswith('.csv'):
+                df = pd.read_csv(uploaded_file)
+            else:
+                df = pd.read_excel(uploaded_file)
+            
+            st.success("✅ تم قراءة الملف بنجاح!")
+            
+            if not st.session_state.email_submitted:
+                st.markdown("---")
+                col_gate1, col_gate2 = st.columns([2, 1])
+                with col_gate1:
+                    st.warning("🔒 **التقرير محمي:** يرجى التسجيل للمتابعة.")
+                    with st.form("gate_form"):
+                        name = st.text_input("الاسم:")
+                        email = st.text_input("البريد الإلكتروني:")
+                        if st.form_submit_button("🔓 فتح التقرير"):
+                            if "@" in email:
+                                st.session_state.email_submitted = True
+                                st.session_state.user_name = name
+                                saved, msg = save_to_google_sheets(name, email)
+                                st.balloons()
+                                st.rerun()
+                            else:
+                                st.error("الرجاء إدخال إيميل صحيح")
+            else:
+                st.info(f"مرحباً {st.session_state.user_name}، إليك تحليل بياناتك:")
+                
+                num_cols = df.select_dtypes(include=['number']).columns
+                cat_cols = df.select_dtypes(include=['object']).columns
+                
+                if len(num_cols) > 0:
+                    # 💰 حاسبة الربحية
+                    st.markdown("### 💰 مؤشرات الربحية والنمو")
+                    st.caption("حدد الأعمدة الخاصة بالإيرادات والتكاليف لحساب صافي الربح:")
+                    
+                    c_sel1, c_sel2 = st.columns(2)
+                    with c_sel1:
+                        rev_col = st.selectbox("اختر عمود (المبيعات/الإيراد):", num_cols, index=0)
+                    with c_sel2:
+                        def_idx = 1 if len(num_cols) > 1 else 0
+                        cost_col = st.selectbox("اختر عمود (التكلفة/المصروفات):", num_cols, index=def_idx)
+                    
+                    total_revenue = df[rev_col].sum()
+                    total_cost = df[cost_col].sum()
+                    net_profit = total_revenue - total_cost
+                    profit_margin = (net_profit / total_revenue * 100) if total_revenue > 0 else 0
+                    
+                    st.markdown("---")
+                    
+                    kpi1, kpi2, kpi3 = st.columns(3)
+                    with kpi1:
+                        st.metric("إجمالي المبيعات", f"{total_revenue:,.0f}")
+                    with kpi2:
+                        st.metric("إجمالي التكاليف", f"{total_cost:,.0f}")
+                    with kpi3:
+                        st.metric("صافي الربح", f"{net_profit:,.0f}", delta=f"{profit_margin:.1f}% هامش ربح")
+                    
+                    st.markdown("---")
+
+                col_p1, col_p2 = st.columns([3, 1])
+                with col_p1:
+                    st.write("💡 **هل تريد تحليلاً أعمق؟ (توقعات المستقبل + خطة تقليل التكاليف)**")
+                with col_p2:
+                    st.link_button("💳 شراء التقرير الكامل", "https://buy.stripe.com/test_123")
+                st.markdown("---")
+
+                if len(num_cols) > 0:
+                    if len(cat_cols) > 0:
+                        st.plotly_chart(px.bar(df, x=cat_cols[0], y=rev_col, title=f"تحليل {rev_col} حسب التصنيف"), use_container_width=True)
+                    else:
+                        st.line_chart(df[rev_col])
+                else:
+                    st.dataframe(df)
+
+        except Exception as e:
+            st.error("حدث خطأ أثناء قراءة الملف.")
+            st.error(e)
