@@ -10,7 +10,7 @@ import os
 # ---------------------------------------------------------
 st.set_page_config(page_title="Qarar | قرار", page_icon="💎", layout="wide")
 
-# تنسيق CSS (مبسط)
+# تنسيق CSS
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
@@ -48,7 +48,12 @@ def save_to_google_sheets(name, email):
 # 3. القائمة الجانبية
 # ---------------------------------------------------------
 with st.sidebar:
-    st.image("https://cdn-icons-png.flaticon.com/512/3094/3094851.png", width=80)
+    # محاولة عرض الشعار
+    try:
+        st.image("https://cdn-icons-png.flaticon.com/512/3094/3094851.png", width=80)
+    except:
+        st.write("💎")
+        
     st.title("منصة قرار")
     st.markdown("---")
     mode = st.radio("القائمة:", ["🏠 الصفحة الرئيسية", "⚡ تجربة النظام (Demo)", "📂 رفع وتحليل ملفي"])
@@ -57,7 +62,6 @@ with st.sidebar:
     st.markdown("[LinkedIn 🔗](https://www.linkedin.com/in/reham-morsy-45b61a192/)")
     st.caption("© 2026 Dr. Reham Morsy")
 
-# تهيئة المتغيرات
 if 'email_submitted' not in st.session_state: st.session_state.email_submitted = False
 if 'user_name' not in st.session_state: st.session_state.user_name = "Guest"
 
@@ -73,16 +77,26 @@ if mode == "🏠 الصفحة الرئيسية":
     
     c1, c2 = st.columns([1, 2.5])
     with c1:
-        if os.path.exists("profile.png"): st.image("profile.png", width=200)
-        else: st.image("https://cdn-icons-png.flaticon.com/512/4140/4140048.png", width=180)
+        # --- كود الصورة الآمن الجديد ---
+        image_shown = False
+        if os.path.exists("profile.png"):
+            try:
+                st.image("profile.png", width=200)
+                image_shown = True
+            except:
+                pass # إذا فشلت الصورة الحقيقية، تجاوزها
+        
+        if not image_shown:
+            st.image("https://cdn-icons-png.flaticon.com/512/4140/4140048.png", width=180)
+        # -------------------------------
         st.caption("د. ريهام مرسي")
+
     with c2:
         st.markdown("### مرحباً، أنا د. ريهام مرسي 👋\n**شريكك الاستراتيجي في تحليل الأعمال والمالية**\n\nأؤمن أن خلف كل رقم في شركتك قصة، وخلف كل جدول بيانات فرصة ضائعة أو ربح منتظر. دوري ترجمتها للغة القرارات.")
 
     st.write("---")
     st.subheader("🛠️ خدماتنا")
     s1, s2, s3 = st.columns(3)
-    # تم تحويل النصوص هنا لسطر واحد لتجنب الأخطاء
     s1.markdown('<div class="service-card"><h3>📊 تحليل مالي</h3><p>داشبورد تفاعلية تكشف مواطن الربح والخسارة.</p></div>', unsafe_allow_html=True)
     s2.markdown('<div class="service-card"><h3>💡 دراسات جدوى</h3><p>تقييم المشاريع وحساب العائد المتوقع ROI بدقة.</p></div>', unsafe_allow_html=True)
     s3.markdown('<div class="service-card"><h3>📉 خفض التكاليف</h3><p>استراتيجيات ذكية لتقليل الهدر ورفع الكفاءة.</p></div>', unsafe_allow_html=True)
@@ -138,18 +152,3 @@ elif mode == "📂 رفع وتحليل ملفي":
                     sel1, sel2 = st.columns(2)
                     rev_col = sel1.selectbox("المبيعات:", num_cols, index=0)
                     cost_col = sel2.selectbox("التكلفة:", num_cols, index=(1 if len(num_cols)>1 else 0))
-                    
-                    rev = df[rev_col].sum()
-                    cost = df[cost_col].sum()
-                    profit = rev - cost
-                    
-                    k1, k2, k3 = st.columns(3)
-                    k1.metric("المبيعات", f"{rev:,.0f}")
-                    k2.metric("التكاليف", f"{cost:,.0f}")
-                    k3.metric("الربح", f"{profit:,.0f}")
-                    
-                    st.plotly_chart(px.bar(df, x=df.columns[0], y=rev_col), use_container_width=True)
-                else:
-                    st.dataframe(df)
-        except Exception as e:
-            st.error("حدث خطأ في الملف")
