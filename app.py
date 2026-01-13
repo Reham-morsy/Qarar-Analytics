@@ -12,25 +12,34 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- 2. CSS (تم تغيير الألوان هنا) ---
+# --- 2. CSS (تعديلات المسافات) ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 html, body, [class*="css"] { font-family: 'Cairo', sans-serif; }
 
-/* الكود اللوني الجديد: أخضر زمردي (#27AE60) */
+/* تنسيق الأزرار */
+div.stButton > button {
+    background-color: #27AE60; color: white; border: none;
+    border-radius: 10px; padding: 10px 20px; font-weight: bold;
+    transition: 0.3s;
+}
+div.stButton > button:hover {
+    background-color: #219150; border-color: #219150; color: white;
+}
+
 .service-box {
     background-color: white; padding: 20px;
     border-radius: 15px; text-align: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    border-top: 5px solid #27AE60; 
-    height: 200px; margin-bottom: 20px;
+    border-top: 5px solid #27AE60;
+    height: 220px; margin-bottom: 20px;
 }
 .hero-box {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-    padding: 30px; border-radius: 20px;
+    padding: 40px; border-radius: 20px;
     margin-bottom: 30px; text-align: right; direction: rtl;
-    border-right: 5px solid #27AE60;
+    border-right: 6px solid #27AE60;
 }
 .footer {
     position: fixed; left: 0; bottom: 0; width: 100%;
@@ -56,38 +65,42 @@ def save_data(n, e):
     except:
         return False
 
-# --- 4. القائمة الجانبية ---
+# --- 4. القائمة الجانبية (تم تعديل المسافة هنا) ---
 with st.sidebar:
     if os.path.exists("logo.png"):
+        # تصغير العرض قليلاً ليكون أنيقاً
         st.image("logo.png", use_column_width=True)
     else:
         st.image("https://cdn-icons-png.flaticon.com/512/3094/3094851.png", width=80)
     
-    # تم تغيير لون العنوان للأخضر
-    st.markdown("<h2 style='text-align: center; color: #27AE60;'>منصة قرار</h2>", unsafe_allow_html=True)
+    # تم رفع العنوان للأعلى باستخدام margin-top بالسالب
+    st.markdown("""
+        <h2 style='text-align: center; color: #27AE60; margin-top: -20px; padding-top: 0;'>
+        منصة قرار
+        </h2>
+    """, unsafe_allow_html=True)
+    
     st.markdown("---")
     
-    menu = [
-        "🏠 الرئيسية",
-        "⚡ ديمو",
-        "📂 التحليل"
-    ]
-    nav = st.radio("القائمة:", menu)
+    # التنقل
+    if 'page' not in st.session_state: st.session_state.page = "🏠 الرئيسية"
+    def set_page(p): st.session_state.page = p
+    
+    if st.button("🏠 الرئيسية", use_container_width=True): set_page("🏠 الرئيسية")
+    if st.button("⚡ ديمو", use_container_width=True): set_page("⚡ ديمو")
+    if st.button("📂 التحليل", use_container_width=True): set_page("📂 التحليل")
     
     st.markdown("---")
     st.markdown("[LinkedIn 🔗](https://www.linkedin.com/in/reham-morsy-45b61a192/)")
     st.caption("© 2026 Dr. Reham Morsy")
 
-if 'auth' not in st.session_state: st.session_state.auth = False
-if 'user' not in st.session_state: st.session_state.user = "Guest"
-
 # --- 5. المحتوى ---
 
 # === الرئيسية ===
-if nav == "🏠 الرئيسية":
+if st.session_state.page == "🏠 الرئيسية":
     with st.container():
         st.markdown('<div class="hero-box">', unsafe_allow_html=True)
-        c1, c2 = st.columns([1, 3])
+        c1, c2 = st.columns([1, 2.5])
         with c1:
             img_ok = False
             if os.path.exists("profile.png"):
@@ -99,10 +112,14 @@ if nav == "🏠 الرئيسية":
             if not img_ok:
                 st.image("https://cdn-icons-png.flaticon.com/512/949/949635.png", width=180)
         with c2:
-            # تم تغيير لون الاسم للأخضر
             st.markdown("## <span style='color:#27AE60'>د. ريهام مرسي</span>", unsafe_allow_html=True)
             st.markdown("#### شريكك الاستراتيجي في تحليل الأعمال")
-            st.write("أساعد الشركات على تحويل البيانات إلى قرارات مربحة.")
+            st.write("أساعد الشركات ورواد الأعمال على تحويل البيانات الجامدة إلى قرارات استراتيجية مربحة.")
+            st.write("")
+            if st.button("🚀 ابدأ تحليل بياناتك الآن"):
+                set_page("📂 التحليل")
+                st.rerun()
+                
         st.markdown('</div>', unsafe_allow_html=True)
 
     st.markdown("### 🚀 خدماتنا المتميزة")
@@ -113,7 +130,7 @@ if nav == "🏠 الرئيسية":
         <div class="service-box">
             <img src="https://cdn-icons-png.flaticon.com/512/2910/2910791.png" width="50">
             <h3>تحليل مالي</h3>
-            <p>لوحات بيانات تفاعلية تكشف مسار الربحية.</p>
+            <p>لوحات بيانات تفاعلية (Dashboards) تكشف مسار الربحية والخسارة.</p>
         </div>
         """, unsafe_allow_html=True)
     
@@ -122,7 +139,7 @@ if nav == "🏠 الرئيسية":
         <div class="service-box">
             <img src="https://cdn-icons-png.flaticon.com/512/1570/1570992.png" width="50">
             <h3>دراسات جدوى</h3>
-            <p>حساب ROI وتقييم المخاطر بدقة عالية.</p>
+            <p>حساب العائد على الاستثمار (ROI) وتقييم المخاطر بدقة عالية.</p>
         </div>
         """, unsafe_allow_html=True)
         
@@ -131,7 +148,7 @@ if nav == "🏠 الرئيسية":
         <div class="service-box">
             <img src="https://cdn-icons-png.flaticon.com/512/1624/1624568.png" width="50">
             <h3>استشارات نمو</h3>
-            <p>خطط لتقليل الهدر ورفع كفاءة التشغيل.</p>
+            <p>خطط عملية لتقليل الهدر المالي ورفع كفاءة التشغيل.</p>
         </div>
         """, unsafe_allow_html=True)
 
@@ -155,10 +172,9 @@ if nav == "🏠 الرئيسية":
     st.markdown('<div class="footer">جميع الحقوق محفوظة لمنصة قرار 2026</div>', unsafe_allow_html=True)
 
 # === ديمو ===
-elif nav == "⚡ ديمو":
+elif st.session_state.page == "⚡ ديمو":
     st.header("⚡ تجربة حية")
     data = {'الفرع': ['الرياض', 'جدة']*5, 'المبيعات': [45000, 32000]*5}
-    # تم تغيير لون الرسم البياني للأخضر
     fig = px.bar(
         pd.DataFrame(data), 
         x='الفرع', 
@@ -168,7 +184,7 @@ elif nav == "⚡ ديمو":
     st.plotly_chart(fig)
 
 # === التحليل ===
-elif nav == "📂 التحليل":
+elif st.session_state.page == "📂 التحليل":
     st.header("📂 تحليل البيانات الخاص")
     
     up_file = st.file_uploader(
@@ -184,7 +200,7 @@ elif nav == "📂 التحليل":
                 df = pd.read_excel(up_file)
             st.success("✅ تم القراءة")
             
-            if not st.session_state.auth:
+            if not st.session_state.get('auth', False):
                 st.warning("🔒 يرجى التسجيل للمتابعة")
                 with st.form("log"):
                     n = st.text_input("الاسم")
