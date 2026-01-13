@@ -5,19 +5,18 @@ import gspread
 from datetime import datetime
 import os
 
-# --- 1. إعدادات الصفحة ---
+# --- 1. الإعدادات ---
 st.set_page_config(
     page_title="Qarar | قرار",
     page_icon="💎",
     layout="wide"
 )
 
-# --- 2. التصميم CSS ---
+# --- 2. CSS ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 html, body, [class*="css"] { font-family: 'Cairo', sans-serif; }
-
 .service-box {
     background-color: white; padding: 20px;
     border-radius: 15px; text-align: center;
@@ -56,6 +55,7 @@ def save_data(n, e):
 
 # --- 4. القائمة الجانبية ---
 with st.sidebar:
+    # اللوجو
     if os.path.exists("logo.png"):
         st.image("logo.png", use_column_width=True)
     else:
@@ -64,4 +64,95 @@ with st.sidebar:
     st.markdown("<h2 style='text-align: center; color: #2E86C1;'>منصة قرار</h2>", unsafe_allow_html=True)
     st.markdown("---")
     
-    nav = st.radio("القائمة:", ["
+    # القائمة (تم كتابتها عمودياً لتجنب الخطأ)
+    menu_options = [
+        "🏠 الرئيسية",
+        "⚡ ديمو",
+        "📂 التحليل"
+    ]
+    nav = st.radio("القائمة:", menu_options)
+    
+    st.markdown("---")
+    st.markdown("[LinkedIn 🔗](https://www.linkedin.com/in/reham-morsy-45b61a192/)")
+    st.caption("© 2026 Dr. Reham Morsy")
+
+if 'auth' not in st.session_state: st.session_state.auth = False
+if 'user' not in st.session_state: st.session_state.user = "Guest"
+
+# --- 5. المحتوى ---
+
+# === الرئيسية ===
+if nav == "🏠 الرئيسية":
+    with st.container():
+        st.markdown('<div class="hero-box">', unsafe_allow_html=True)
+        c1, c2 = st.columns([1, 3])
+        with c1:
+            img_ok = False
+            if os.path.exists("profile.png"):
+                try:
+                    st.image("profile.png", width=180)
+                    img_ok = True
+                except:
+                    pass
+            if not img_ok:
+                st.image("https://cdn-icons-png.flaticon.com/512/949/949635.png", width=180)
+        with c2:
+            st.markdown("## د. ريهام مرسي")
+            st.markdown("#### شريكك الاستراتيجي في تحليل الأعمال")
+            st.write("أساعد الشركات على تحويل البيانات إلى قرارات مربحة.")
+        st.markdown('</div>', unsafe_allow_html=True)
+
+    st.markdown("### 🚀 خدماتنا المتميزة")
+    col1, col2, col3 = st.columns(3)
+    
+    with col1:
+        st.markdown("""
+        <div class="service-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/2910/2910791.png" width="50">
+            <h3>تحليل مالي</h3>
+            <p>لوحات بيانات تفاعلية تكشف مسار الربحية.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    with col2:
+        st.markdown("""
+        <div class="service-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/1570/1570992.png" width="50">
+            <h3>دراسات جدوى</h3>
+            <p>حساب ROI وتقييم المخاطر بدقة عالية.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    with col3:
+        st.markdown("""
+        <div class="service-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/1624/1624568.png" width="50">
+            <h3>استشارات نمو</h3>
+            <p>خطط لتقليل الهدر ورفع كفاءة التشغيل.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.write("---")
+    st.markdown("### 🎓 رحلة العلم والخبرة")
+    e1, e2, e3, e4 = st.columns(4)
+    
+    with e1:
+        st.success("🏗️ **2013**")
+        st.write("بكالوريوس إدارة أعمال")
+    with e2:
+        st.info("📈 **2017**")
+        st.write("ماجستير في التمويل")
+    with e3:
+        st.warning("🏛️ **الأكاديمية**")
+        st.write("محاضر جامعي وباحث")
+    with e4:
+        st.error("💼 **2020**")
+        st.write("استشارات مالية للشركات")
+
+    st.markdown('<div class="footer">جميع الحقوق محفوظة لمنصة قرار 2026</div>', unsafe_allow_html=True)
+
+# === ديمو ===
+elif nav == "⚡ ديمو":
+    st.header("⚡ تجربة حية")
+    data = {'الفرع': ['الرياض', 'جدة']*5, 'المبيعات': [45000, 32000]*5}
+    st.plotly_chart(px.
