@@ -85,7 +85,7 @@ if 'user' not in st.session_state: st.session_state.user = "Guest"
 # ==========================
 if nav == "🏠 الرئيسية":
     
-    # 1. الهيرو سكشن (الصورة والتعريف)
+    # 1. الهيرو سكشن
     with st.container():
         st.markdown('<div class="hero-box">', unsafe_allow_html=True)
         c1, c2 = st.columns([1, 3])
@@ -100,11 +100,10 @@ if nav == "🏠 الرئيسية":
             st.write("أساعد الشركات على تحويل البيانات إلى قرارات مربحة.")
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # 2. قسم الخدمات (مع الصور)
+    # 2. الخدمات
     st.markdown("### 🚀 خدماتنا المتميزة")
     col1, col2, col3 = st.columns(3)
     
-    # الخدمة 1
     with col1:
         st.markdown("""
         <div class="service-box">
@@ -114,7 +113,6 @@ if nav == "🏠 الرئيسية":
         </div>
         """, unsafe_allow_html=True)
     
-    # الخدمة 2
     with col2:
         st.markdown("""
         <div class="service-box">
@@ -124,7 +122,6 @@ if nav == "🏠 الرئيسية":
         </div>
         """, unsafe_allow_html=True)
         
-    # الخدمة 3
     with col3:
         st.markdown("""
         <div class="service-box">
@@ -136,25 +133,25 @@ if nav == "🏠 الرئيسية":
 
     st.write("---")
 
-    # 3. رحلة الخبرة (المربعات المرصوصة) - عادت هنا! ✅
+    # 3. الخبرة
     st.markdown("### 🎓 رحلة العلم والخبرة")
     e1, e2, e3, e4 = st.columns(4)
     
     with e1:
         st.success("🏗️ **2013**")
-        st.write("بكالوريوس إدارة أعمال (جيد جداً)")
+        st.write("بكالوريوس إدارة أعمال")
         
     with e2:
         st.info("📈 **2017**")
-        st.write("ماجستير في التمويل والاستثمار")
+        st.write("ماجستير في التمويل")
         
     with e3:
         st.warning("🏛️ **الأكاديمية**")
-        st.write("محاضر جامعي وباحث مالي")
+        st.write("محاضر جامعي وباحث")
         
     with e4:
-        st.error("💼 **2020 - الآن**")
-        st.write("استشارات مالية وإدارية للشركات")
+        st.error("💼 **2020**")
+        st.write("استشارات مالية للشركات")
 
     # 4. الفوتر
     st.markdown('<div class="footer">جميع الحقوق محفوظة لمنصة قرار 2026 | تطوير د. ريهام مرسي</div>', unsafe_allow_html=True)
@@ -179,3 +176,46 @@ elif nav == "📂 التحليل":
     if up_file:
         try:
             if up_file.name.endswith('.csv'): df = pd.read_csv(up_file)
+            else: df = pd.read_excel(up_file)
+            st.success("✅ تم القراءة")
+            
+            if not st.session_state.auth:
+                st.warning("🔒 يرجى التسجيل للمتابعة")
+                with st.form("log"):
+                    n = st.text_input("الاسم")
+                    e = st.text_input("الايميل")
+                    if st.form_submit_button("عرض"):
+                        if "@" in e:
+                            st.session_state.auth = True
+                            st.session_state.user = n
+                            save_data(n, e)
+                            st.rerun()
+            else:
+                st.info(f"أهلاً {st.session_state.user}")
+                nums = df.select_dtypes(include=['number']).columns
+                
+                if len(nums) > 0:
+                    st.subheader("💰 حاسبة الربحية")
+                    c1, c2 = st.columns(2)
+                    v1 = c1.selectbox("المبيعات:", nums, index=0)
+                    idx = 1 if len(nums) > 1 else 0
+                    v2 = c2.selectbox("التكلفة:", nums, index=idx)
+                    
+                    rev = df[v1].sum()
+                    cost = df[v2].sum()
+                    prof = rev - cost
+                    
+                    k1, k2, k3 = st.columns(3)
+                    k1.metric("المبيعات", f"{rev:,.0f}")
+                    k2.metric("التكاليف", f"{cost:,.0f}")
+                    k3.metric("الربح", f"{prof:,.0f}")
+                    
+                    st.plotly_chart(px.bar(df, x=df.columns[0], y=v1))
+                else:
+                    st.dataframe(df)
+        
+        # --- (مهم جداً: هذا هو الجزء الذي كان ناقصاً) ---
+        except Exception as e:
+            st.error("حدث خطأ في قراءة الملف")
+            
+# --- نهاية الملف ---
