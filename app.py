@@ -77,18 +77,18 @@ if mode == "🏠 الصفحة الرئيسية":
     
     c1, c2 = st.columns([1, 2.5])
     with c1:
-        # --- كود الصورة الآمن الجديد ---
+        # كود الصورة الآمن
         image_shown = False
         if os.path.exists("profile.png"):
             try:
                 st.image("profile.png", width=200)
                 image_shown = True
             except:
-                pass # إذا فشلت الصورة الحقيقية، تجاوزها
+                pass
         
         if not image_shown:
             st.image("https://cdn-icons-png.flaticon.com/512/4140/4140048.png", width=180)
-        # -------------------------------
+            
         st.caption("د. ريهام مرسي")
 
     with c2:
@@ -152,3 +152,20 @@ elif mode == "📂 رفع وتحليل ملفي":
                     sel1, sel2 = st.columns(2)
                     rev_col = sel1.selectbox("المبيعات:", num_cols, index=0)
                     cost_col = sel2.selectbox("التكلفة:", num_cols, index=(1 if len(num_cols)>1 else 0))
+                    
+                    rev = df[rev_col].sum()
+                    cost = df[cost_col].sum()
+                    profit = rev - cost
+                    
+                    k1, k2, k3 = st.columns(3)
+                    k1.metric("المبيعات", f"{rev:,.0f}")
+                    k2.metric("التكاليف", f"{cost:,.0f}")
+                    k3.metric("الربح", f"{profit:,.0f}")
+                    
+                    st.plotly_chart(px.bar(df, x=df.columns[0], y=rev_col), use_container_width=True)
+                else:
+                    st.dataframe(df)
+        except Exception as e:
+            st.error("حدث خطأ في قراءة الملف")
+            
+# --- نهاية الكود ---
