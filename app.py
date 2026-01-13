@@ -12,46 +12,48 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- 2. التصميم CSS (النسخة الاحترافية) ---
+# --- 2. التصميم CSS ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 html, body, [class*="css"] { font-family: 'Cairo', sans-serif; }
 
-/* تنسيق الهيرو سكشن */
-.hero-box {
-    background: linear-gradient(135deg, #f6f8f9 0%, #e5ebee 100%);
-    padding: 40px; border-radius: 20px;
-    margin-bottom: 30px; text-align: right; direction: rtl;
-    border-right: 6px solid #2E86C1;
-}
-
 /* تنسيق كروت الخدمات */
 .service-box {
-    background-color: white; padding: 20px;
-    border-radius: 15px; text-align: center;
+    background-color: white; 
+    padding: 20px;
+    border-radius: 15px; 
+    text-align: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    border-bottom: 4px solid #2E86C1;
-    height: 180px; margin-bottom: 10px;
+    border-top: 5px solid #2E86C1;
+    height: 200px; 
+    margin-bottom: 20px;
+}
+
+/* تنسيق الهيرو */
+.hero-box {
+    background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+    padding: 30px; border-radius: 20px;
+    margin-bottom: 30px; text-align: right; direction: rtl;
 }
 
 /* الفوتر */
-.footer-text {
-    text-align: center; color: #888; font-size: 12px;
-    margin-top: 50px; border-top: 1px solid #eee; padding-top: 20px;
+.footer {
+    position: fixed; left: 0; bottom: 0; width: 100%;
+    background-color: #f1f1f1; color: #555; 
+    text-align: center; padding: 10px; z-index: 100;
+    font-size: 13px; border-top: 1px solid #ddd;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# --- 3. دالة الحفظ (Google Sheets) ---
+# --- 3. دالة الحفظ ---
 def save_data(n, e):
     try:
         if "gcp_service_account" in st.secrets:
-            # الاتصال بجوجل
             creds = st.secrets["gcp_service_account"]
             gc = gspread.service_account_from_dict(creds)
             sh = gc.open("QararLeads")
-            # تسجيل البيانات
             wks = sh.sheet1
             now = datetime.now().strftime("%Y-%m-%d %H:%M")
             wks.append_row([n, e, now])
@@ -68,58 +70,112 @@ with st.sidebar:
         st.write("💎")
         
     st.title("منصة قرار")
+    nav = st.radio("القائمة:", ["🏠 الرئيسية", "⚡ ديمو", "📂 التحليل"])
     st.markdown("---")
-    
-    # قائمة التنقل
-    nav = st.radio(
-        "القائمة:", 
-        ["🏠 الرئيسية", "⚡ ديمو", "📂 التحليل"]
-    )
-    
-    st.markdown("---")
-    st.markdown("**تواصل معنا:**")
-    st.markdown("[LinkedIn Profile 🔗](https://www.linkedin.com/in/reham-morsy-45b61a192/)")
+    st.markdown("[LinkedIn 🔗](https://www.linkedin.com/in/reham-morsy-45b61a192/)")
     st.caption("© 2026 Dr. Reham Morsy")
 
-# تهيئة الجلسة
 if 'auth' not in st.session_state: st.session_state.auth = False
 if 'user' not in st.session_state: st.session_state.user = "Guest"
 
-# --- 5. المحتوى الرئيسي ---
+# --- 5. المحتوى ---
 
 # ==========================
-# 🏠 الصفحة الرئيسية (كاملة)
+# 🏠 الصفحة الرئيسية
 # ==========================
 if nav == "🏠 الرئيسية":
     
-    # 1. الهيرو سكشن (الافتتاحية الفخمة)
+    # 1. الهيرو سكشن (الصورة والتعريف)
     with st.container():
         st.markdown('<div class="hero-box">', unsafe_allow_html=True)
-        col1, col2 = st.columns([1, 3])
-        
-        with col1:
-            # كود الصورة الذكي (يحاول الحقيقية ثم البديلة)
-            real_img = "profile.png"
-            fake_img = "https://cdn-icons-png.flaticon.com/512/949/949635.png"
-            
-            if os.path.exists(real_img):
-                try:
-                    st.image(real_img, width=180)
-                except:
-                    st.image(fake_img, width=180)
+        c1, c2 = st.columns([1, 3])
+        with c1:
+            if os.path.exists("profile.png"):
+                st.image("profile.png", width=180)
             else:
-                st.image(fake_img, width=180)
-                
-        with col2:
+                st.image("https://cdn-icons-png.flaticon.com/512/949/949635.png", width=180)
+        with c2:
             st.markdown("## د. ريهام مرسي")
             st.markdown("#### شريكك الاستراتيجي في تحليل الأعمال")
-            st.write("""
-            أساعد الشركات ورواد الأعمال على تحويل البيانات الجامدة 
-            إلى قرارات استراتيجية مربحة.
-            خبرة تجمع بين الدقة الأكاديمية والواقع العملي.
-            """)
+            st.write("أساعد الشركات على تحويل البيانات إلى قرارات مربحة.")
         st.markdown('</div>', unsafe_allow_html=True)
 
-    st.write("") # مسافة
+    # 2. قسم الخدمات (مع الصور)
+    st.markdown("### 🚀 خدماتنا المتميزة")
+    col1, col2, col3 = st.columns(3)
+    
+    # الخدمة 1
+    with col1:
+        st.markdown("""
+        <div class="service-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/2910/2910791.png" width="50">
+            <h3>تحليل مالي</h3>
+            <p>لوحات بيانات تفاعلية تكشف مسار الربحية.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    
+    # الخدمة 2
+    with col2:
+        st.markdown("""
+        <div class="service-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/1570/1570992.png" width="50">
+            <h3>دراسات جدوى</h3>
+            <p>حساب ROI وتقييم المخاطر بدقة عالية.</p>
+        </div>
+        """, unsafe_allow_html=True)
+        
+    # الخدمة 3
+    with col3:
+        st.markdown("""
+        <div class="service-box">
+            <img src="https://cdn-icons-png.flaticon.com/512/1624/1624568.png" width="50">
+            <h3>استشارات نمو</h3>
+            <p>خطط لتقليل الهدر ورفع كفاءة التشغيل.</p>
+        </div>
+        """, unsafe_allow_html=True)
 
-    # 2. قسم
+    st.write("---")
+
+    # 3. رحلة الخبرة (المربعات المرصوصة) - عادت هنا! ✅
+    st.markdown("### 🎓 رحلة العلم والخبرة")
+    e1, e2, e3, e4 = st.columns(4)
+    
+    with e1:
+        st.success("🏗️ **2013**")
+        st.write("بكالوريوس إدارة أعمال (جيد جداً)")
+        
+    with e2:
+        st.info("📈 **2017**")
+        st.write("ماجستير في التمويل والاستثمار")
+        
+    with e3:
+        st.warning("🏛️ **الأكاديمية**")
+        st.write("محاضر جامعي وباحث مالي")
+        
+    with e4:
+        st.error("💼 **2020 - الآن**")
+        st.write("استشارات مالية وإدارية للشركات")
+
+    # 4. الفوتر
+    st.markdown('<div class="footer">جميع الحقوق محفوظة لمنصة قرار 2026 | تطوير د. ريهام مرسي</div>', unsafe_allow_html=True)
+
+
+# ==========================
+# ⚡ ديمو
+# ==========================
+elif nav == "⚡ ديمو":
+    st.header("⚡ تجربة حية")
+    data = {'الفرع': ['الرياض', 'جدة']*5, 'المبيعات': [45000, 32000]*5}
+    st.plotly_chart(px.bar(pd.DataFrame(data), x='الفرع', y='المبيعات'))
+
+
+# ==========================
+# 📂 التحليل
+# ==========================
+elif nav == "📂 التحليل":
+    st.header("📂 تحليل البيانات الخاص")
+    up_file = st.file_uploader("ارفع ملف Excel/CSV", type=['xlsx', 'csv'])
+    
+    if up_file:
+        try:
+            if up_file.name.endswith('.csv'): df = pd.read_csv(up_file)
