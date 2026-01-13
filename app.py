@@ -6,7 +6,7 @@ from datetime import datetime
 import os
 
 # ---------------------------------------------------------
-# 1. إعدادات الصفحة
+# 1. إعدادات الصفحة والتصميم
 # ---------------------------------------------------------
 st.set_page_config(
     page_title="Qarar | قرار",
@@ -121,9 +121,9 @@ if mode == "🏠 الصفحة الرئيسية":
 
     st.write("---")
 
-    # الخبرة (هنا كان الخطأ)
+    # الخبرة
     st.subheader("🎓 رحلة العلم والخبرة")
-    c1, c2, c3, c4 = st.columns(4)  # تأكدي أن هذا السطر كامل
+    c1, c2, c3, c4 = st.columns(4)
     with c1:
         st.success("🏗️ **2013**")
         st.write("بكالوريوس (جيد جداً).")
@@ -170,4 +170,15 @@ elif mode == "📂 رفع وتحليل ملفي":
 
             if not st.session_state.email_submitted:
                 st.markdown("---")
-                st.warning
+                # هنا كان الخطأ السابق وتم إصلاحه
+                col_gate1, col_gate2 = st.columns([2, 1])
+                with col_gate1:
+                    st.warning("🔒 يرجى التسجيل للمتابعة.")
+                    with st.form("gate_form"):
+                        name = st.text_input("الاسم:")
+                        email = st.text_input("البريد الإلكتروني:")
+                        if st.form_submit_button("🔓 فتح التقرير"):
+                            if "@" in email:
+                                st.session_state.email_submitted = True
+                                st.session_state.user_name = name
+                                save_to_google_sheets(name
