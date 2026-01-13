@@ -6,7 +6,7 @@ from datetime import datetime
 import os
 
 # ---------------------------------------------------------
-# 1. إعدادات الصفحة
+# 1. إعدادات الصفحة والتصميم
 # ---------------------------------------------------------
 st.set_page_config(
     page_title="Qarar | قرار",
@@ -15,12 +15,18 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# CSS للتجميل
+# CSS للتجميل والخطوط
 st.markdown("""
 <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
+    
+    html, body, [class*="css"] {
+        font-family: 'Cairo', sans-serif;
+    }
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     .stDeployButton {display:none;}
+    
     .stTextInput > div > div > input {
         border-radius: 10px;
         border: 1px solid #ddd;
@@ -29,16 +35,34 @@ st.markdown("""
         border-radius: 10px;
         width: 100%;
         font-weight: bold;
+        background-color: #2E86C1;
+        color: white;
     }
-    div[data-testid="stMetricValue"] {
-        font-size: 24px;
-        color: #2E86C1;
+    .service-card {
+        background-color: #f8f9fa;
+        padding: 20px;
+        border-radius: 10px;
+        border-left: 5px solid #2E86C1;
+        text-align: center;
+        margin-bottom: 10px;
+    }
+    .footer {
+        position: fixed;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        background-color: #f1f1f1;
+        color: #555;
+        text-align: center;
+        padding: 10px;
+        font-size: 14px;
+        z-index: 100;
     }
 </style>
 """, unsafe_allow_html=True)
 
 # ---------------------------------------------------------
-# 2. دالة الربط (Backend) - Google Sheets
+# 2. دالة الربط (Backend)
 # ---------------------------------------------------------
 def save_to_google_sheets(name, email):
     try:
@@ -80,7 +104,7 @@ if 'email_submitted' not in st.session_state:
 if 'user_name' not in st.session_state:
     st.session_state.user_name = "Guest"
 
-# --- 🏠 الصفحة الرئيسية (تم استعادة القسم المفقود هنا) ---
+# --- 🏠 الصفحة الرئيسية ---
 if mode == "🏠 الصفحة الرئيسية":
     st.markdown("<h1 style='text-align: center; color: #2E86C1;'>منصة قرار: عندما تتحدث الأرقام.. نصنع نحن القرار 🎯</h1>", unsafe_allow_html=True)
     st.write("---")
@@ -108,28 +132,72 @@ if mode == "🏠 الصفحة الرئيسية":
 
     st.write("---")
 
-    # ✅✅ هنا القسم الذي كان مفقوداً وتمت استعادته ✅✅
+    # 1. قسم الخدمات (جديد)
+    st.subheader("🛠️ ماذا نقدم لك؟")
+    s1, s2, s3 = st.columns(3)
+    with s1:
+        st.markdown("""
+        <div class="service-card">
+        <h3>📊 تحليل مالي</h3>
+        <p>تحويل البيانات إلى داشبورد تفاعلية تكشف مواطن الربح والخسارة.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with s2:
+        st.markdown("""
+        <div class="service-card">
+        <h3>💡 دراسات جدوى</h3>
+        <p>تقييم المشاريع الجديدة وحساب العائد المتوقع (ROI) بدقة.</p>
+        </div>
+        """, unsafe_allow_html=True)
+    with s3:
+        st.markdown("""
+        <div class="service-card">
+        <h3>📉 خفض التكاليف</h3>
+        <p>استراتيجيات ذكية لتقليل الهدر المالي ورفع كفاءة التشغيل.</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.write("---")
+
+    # قسم الرحلة والخبرة
     st.subheader("🎓 رحلة العلم والخبرة")
     c1, c2, c3, c4 = st.columns(4)
     with c1:
-        st.success("🏗️ **2013: الأساس القوي**")
-        st.write("بكالوريوس إدارة الأعمال بتقدير **جيد جداً**.")
+        st.success("🏗️ **2013: الأساس**")
+        st.write("بكالوريوس إدارة أعمال (جيد جداً).")
     with c2:
-        st.info("📈 **2017: التخصص الدقيق**")
-        st.write("ماجستير في **التمويل والاستثمار**.")
+        st.info("📈 **2017: التخصص**")
+        st.write("ماجستير في التمويل والاستثمار.")
     with c3:
-        st.warning("🏛️ **الخبرة الأكاديمية**")
-        st.write("**محاضر جامعي** ينقل العلم للجيل الجديد.")
+        st.warning("🏛️ **الأكاديمية**")
+        st.write("محاضر جامعي وباحث مالي.")
     with c4:
-        st.error("💼 **2020 - الآن: الميدان**")
-        st.write("**استشارات مالية وإدارية** لتحويل الشركات للربحية.")
-    # ----------------------------------------------------
+        st.error("💼 **2020: الميدان**")
+        st.write("استشارات مالية وإدارية.")
+
+    st.write("---")
+    
+    # 2. قسم الأسئلة الشائعة (جديد)
+    st.subheader("❓ أسئلة شائعة")
+    with st.expander("هل بياناتي آمنة على المنصة؟"):
+        st.write("نعم، المنصة تقوم بمعالجة البيانات لحظياً ولا نقوم بتخزين ملفاتك على سيرفراتنا. الأرقام تُعالج وتُحذف فور إغلاق الجلسة.")
+    with st.expander("كيف يمكنني طلب استشارة خاصة؟"):
+        st.write("يمكنك التواصل مباشرة عبر زر LinkedIn أو حجز استشارة مدفوعة بعد تحليل ملفك.")
+    with st.expander("ما هي أنواع الملفات المدعومة؟"):
+        st.write("ندعم ملفات Excel (.xlsx) و CSV حالياً. تأكد من وجود صف رؤوس الأعمدة (Header) في ملفك.")
 
     st.write("---")
     
     col_cta1, col_cta2 = st.columns([3, 1])
     with col_cta1:
         st.info("📢 **هل بياناتك جاهزة لتروي قصتها؟** انتقلي لصفحة التحليل الآن.")
+
+    # 3. الفوتر (جديد)
+    st.markdown("""
+    <div class="footer">
+    <p>© 2026 جميع الحقوق محفوظة لمنصة قرار | تطوير د. ريهام مرسي</p>
+    </div>
+    """, unsafe_allow_html=True)
 
 # --- ⚡ الديمو ---
 elif mode == "⚡ تجربة النظام (Demo)":
@@ -138,7 +206,7 @@ elif mode == "⚡ تجربة النظام (Demo)":
     data = {'المدينة': ['الرياض', 'جدة', 'الدمام', 'مكة']*5, 'المبيعات': [5000, 3000, 4500, 2000]*5}
     st.plotly_chart(px.bar(pd.DataFrame(data), x='المدينة', y='المبيعات', color='المدينة'), use_container_width=True)
 
-# --- 📂 رفع وتحليل ملفي (مع حاسبة الربح الجديدة) ---
+# --- 📂 رفع وتحليل ملفي ---
 elif mode == "📂 رفع وتحليل ملفي":
     st.title("📂 تحليل البيانات الخاص")
     uploaded_file = st.file_uploader("ارفع ملف Excel/CSV", type=['xlsx', 'csv'])
@@ -176,49 +244,4 @@ elif mode == "📂 رفع وتحليل ملفي":
                 cat_cols = df.select_dtypes(include=['object']).columns
                 
                 if len(num_cols) > 0:
-                    # 💰 حاسبة الربحية
-                    st.markdown("### 💰 مؤشرات الربحية والنمو")
-                    st.caption("حدد الأعمدة الخاصة بالإيرادات والتكاليف لحساب صافي الربح:")
-                    
-                    c_sel1, c_sel2 = st.columns(2)
-                    with c_sel1:
-                        rev_col = st.selectbox("اختر عمود (المبيعات/الإيراد):", num_cols, index=0)
-                    with c_sel2:
-                        def_idx = 1 if len(num_cols) > 1 else 0
-                        cost_col = st.selectbox("اختر عمود (التكلفة/المصروفات):", num_cols, index=def_idx)
-                    
-                    total_revenue = df[rev_col].sum()
-                    total_cost = df[cost_col].sum()
-                    net_profit = total_revenue - total_cost
-                    profit_margin = (net_profit / total_revenue * 100) if total_revenue > 0 else 0
-                    
-                    st.markdown("---")
-                    
-                    kpi1, kpi2, kpi3 = st.columns(3)
-                    with kpi1:
-                        st.metric("إجمالي المبيعات", f"{total_revenue:,.0f}")
-                    with kpi2:
-                        st.metric("إجمالي التكاليف", f"{total_cost:,.0f}")
-                    with kpi3:
-                        st.metric("صافي الربح", f"{net_profit:,.0f}", delta=f"{profit_margin:.1f}% هامش ربح")
-                    
-                    st.markdown("---")
-
-                col_p1, col_p2 = st.columns([3, 1])
-                with col_p1:
-                    st.write("💡 **هل تريد تحليلاً أعمق؟ (توقعات المستقبل + خطة تقليل التكاليف)**")
-                with col_p2:
-                    st.link_button("💳 شراء التقرير الكامل", "https://buy.stripe.com/test_123")
-                st.markdown("---")
-
-                if len(num_cols) > 0:
-                    if len(cat_cols) > 0:
-                        st.plotly_chart(px.bar(df, x=cat_cols[0], y=rev_col, title=f"تحليل {rev_col} حسب التصنيف"), use_container_width=True)
-                    else:
-                        st.line_chart(df[rev_col])
-                else:
-                    st.dataframe(df)
-
-        except Exception as e:
-            st.error("حدث خطأ أثناء قراءة الملف.")
-            st.error(e)
+                    st.markdown("### 💰 مؤشرات الربحية وال
