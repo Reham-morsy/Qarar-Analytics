@@ -5,55 +5,33 @@ import gspread
 from datetime import datetime
 import os
 
-# ---------------------------------------------------------
-# 1. الإعدادات
-# ---------------------------------------------------------
-st.set_page_config(page_title="Qarar | قرار", page_icon="💎", layout="wide")
+# 1. إعدادات الصفحة
+st.set_page_config(
+    page_title="Qarar | قرار",
+    page_icon="💎",
+    layout="wide"
+)
 
-# تنسيق CSS (احترافي جداً)
+# 2. التنسيق CSS
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 html, body, [class*="css"] { font-family: 'Cairo', sans-serif; }
-#MainMenu {visibility: hidden;}
-footer {visibility: hidden;}
-
-/* تصميم بطاقة الخدمات */
 .service-card {
-    background-color: white; 
-    padding: 20px; 
-    border-radius: 15px;
+    background-color: white; padding: 20px; 
+    border-radius: 15px; border-top: 5px solid #2E86C1;
+    text-align: center; margin-bottom: 20px; height: 180px;
     box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-    border-top: 5px solid #2E86C1; 
-    text-align: center; 
-    margin-bottom: 20px; 
-    height: 180px;
-    transition: transform 0.3s;
 }
-.service-card:hover { transform: translateY(-5px); }
-
-/* تصميم الافتتاحية (Hero Section) */
 .hero-container {
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-    padding: 40px;
-    border-radius: 20px;
-    margin-bottom: 30px;
-    text-align: right;
-    direction: rtl;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-}
-
-.footer {
-    position: fixed; left: 0; bottom: 0; width: 100%;
-    background-color: #f8f9fa; color: #555; text-align: center; padding: 10px; z-index: 100;
-    font-size: 12px; border-top: 1px solid #ddd;
+    padding: 30px; border-radius: 20px; margin-bottom: 30px;
+    text-align: right; direction: rtl;
 }
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------------------------------------------------
-# 2. دالة جوجل شيت
-# ---------------------------------------------------------
+# 3. دالة الحفظ
 def save_to_google_sheets(name, email):
     try:
         if "gcp_service_account" in st.secrets:
@@ -62,111 +40,131 @@ def save_to_google_sheets(name, email):
             worksheet = sh.sheet1
             current_time = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
             worksheet.append_row([name, email, current_time])
-            return True, "تم الحفظ"
-        return False, "No Secrets"
-    except Exception as e:
-        return False, str(e)
+            return True
+        return False
+    except:
+        return False
 
-# ---------------------------------------------------------
-# 3. القائمة الجانبية
-# ---------------------------------------------------------
+# 4. القائمة الجانبية
 with st.sidebar:
     try:
         st.image("https://cdn-icons-png.flaticon.com/512/3094/3094851.png", width=80)
     except:
         st.write("💎")
-        
     st.title("منصة قرار")
+    mode = st.radio(
+        "القائمة:",
+        ["🏠 الصفحة الرئيسية", "⚡ تجربة النظام (Demo)", "📂 رفع وتحليل ملفي"]
+    )
     st.markdown("---")
-    mode = st.radio("القائمة:", ["🏠 الصفحة الرئيسية", "⚡ تجربة النظام (Demo)", "📂 رفع وتحليل ملفي"])
-    st.markdown("---")
-    st.header("📞 تواصل معنا")
-    st.markdown("[LinkedIn 🔗](https://www.linkedin.com/in/reham-morsy-45b61a192/)")
     st.caption("© 2026 Dr. Reham Morsy")
 
 if 'email_submitted' not in st.session_state: st.session_state.email_submitted = False
 if 'user_name' not in st.session_state: st.session_state.user_name = "Guest"
 
-# ---------------------------------------------------------
-# 4. المحتوى
-# ---------------------------------------------------------
+# 5. المحتوى
 
-# === الرئيسية ===
+# --- الرئيسية ---
 if mode == "🏠 الصفحة الرئيسية":
-    
-    # --- التصميم الجديد للافتتاحية (Hero Section) ---
     with st.container():
         st.markdown('<div class="hero-container">', unsafe_allow_html=True)
-        
-        col_hero1, col_hero2 = st.columns([1, 3])
-        
-        with col_hero1:
-            # كود الصورة الآمن (مع بديل نسائي محترم)
-            image_shown = False
-            if os.path.exists("profile.png"):
+        c1, c2 = st.columns([1, 3])
+        with c1:
+            # محاولة عرض الصورة بشكل آمن
+            img_path = "profile.png"
+            if os.path.exists(img_path):
                 try:
-                    st.image("profile.png", width=200)
-                    image_shown = True
+                    st.image(img_path, width=200)
                 except:
-                    pass
-            
-            if not image_shown:
-                # صورة بديلة (سيدة أعمال) بدل الرجل
+                    st.image("https://cdn-icons-png.flaticon.com/512/949/949635.png", width=180)
+            else:
                 st.image("https://cdn-icons-png.flaticon.com/512/949/949635.png", width=180)
         
-        with col_hero2:
-            st.markdown("""
-            <h1 style='color: #2E86C1; margin-bottom: 0;'>د. ريهام مرسي</h1>
-            <h4 style='color: #555; margin-top: 5px;'>شريكك الاستراتيجي في تحليل الأعمال والمالية</h4>
-            <p style='font-size: 18px; line-height: 1.6;'>
-            أساعد الشركات ورواد الأعمال على تحويل جداول البيانات المعقدة إلى 
-            <b>قرارات استراتيجية مربحة</b>. <br>
-            خبرة تجمع بين الدقة الأكاديمية والعمل الميداني لتحقيق أعلى عائد على الاستثمار (ROI).
-            </p>
-            """, unsafe_allow_html=True)
-            
+        with c2:
+            st.markdown("## د. ريهام مرسي")
+            st.markdown("#### شريكك الاستراتيجي في تحليل الأعمال والمالية")
+            st.write("تحويل جداول البيانات المعقدة إلى قرارات استراتيجية مربحة.")
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # --- الخدمات ---
-    st.markdown("<h3 style='text-align: center; color: #333;'>🚀 خدماتنا المتميزة</h3><br>", unsafe_allow_html=True)
-    
+    # الخدمات
+    st.markdown("### 🚀 خدماتنا المتميزة")
     s1, s2, s3 = st.columns(3)
-    s1.markdown("""
-    <div class="service-card">
-        <img src="https://cdn-icons-png.flaticon.com/512/2910/2910791.png" width="50">
-        <h3>تحليل مالي متقدم</h3>
-        <p style='font-size:14px; color:#666;'>لوحات بيانات تفاعلية تكشف خبايا الأرقام.</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    s2.markdown("""
-    <div class="service-card">
-        <img src="https://cdn-icons-png.flaticon.com/512/1570/1570992.png" width="50">
-        <h3>دراسات جدوى</h3>
-        <p style='font-size:14px; color:#666;'>تقييم دقيق للمخاطر والعوائد قبل البدء.</p>
-    </div>
-    """, unsafe_allow_html=True)
-    
-    s3.markdown("""
-    <div class="service-card">
-        <img src="https://cdn-icons-png.flaticon.com/512/1624/1624568.png" width="50">
-        <h3>استشارات النمو</h3>
-        <p style='font-size:14px; color:#666;'>خطط عملية لخفض التكاليف وزيادة الربحية.</p>
-    </div>
-    """, unsafe_allow_html=True)
+    s1.info("📊 **تحليل مالي متقدم**\n\nلوحات بيانات تفاعلية.")
+    s2.success("💡 **دراسات جدوى**\n\nتقييم دقيق للمخاطر والعوائد.")
+    s3.warning("📉 **استشارات النمو**\n\nخطط لخفض التكاليف.")
 
-    st.write("---")
-    
-    # --- الفوتر ---
-    st.markdown('<div class="footer"><p>© 2026 جميع الحقوق محفوظة لمنصة قرار | تطوير: د. ريهام مرسي</p></div>', unsafe_allow_html=True)
-
-# === الديمو ===
+# --- الديمو ---
 elif mode == "⚡ تجربة النظام (Demo)":
-    st.title("⚡ تجربة حية")
-    data = {'المدينة': ['الرياض', 'جدة', 'الدمام']*5, 'المبيعات': [5000, 3000, 4500]*5}
-    st.plotly_chart(px.bar(pd.DataFrame(data), x='المدينة', y='المبيعات'), use_container_width=True)
+    st.header("⚡ تجربة حية")
+    data = {'المدينة': ['الرياض', 'جدة']*5, 'المبيعات': [5000, 3000]*5}
+    st.plotly_chart(px.bar(pd.DataFrame(data), x='المدينة', y='المبيعات'))
 
-# === التحليل ===
+# --- التحليل (تم تقسيم السطور هنا لمنع الخطأ) ---
 elif mode == "📂 رفع وتحليل ملفي":
-    st.title("📂 تحليل البيانات الخاص")
-    uploaded_file = st.file_uploader("ارفع
+    st.header("📂 تحليل البيانات الخاص")
+    
+    # هنا تم تقسيم السطر الطويل لسطرين قصيرين
+    uploaded_file = st.file_uploader(
+        "ارفع ملف Excel/CSV", 
+        type=['xlsx', 'csv']
+    )
+    
+    if uploaded_file:
+        try:
+            if uploaded_file.name.endswith('.csv'):
+                df = pd.read_csv(uploaded_file)
+            else:
+                df = pd.read_excel(uploaded_file)
+            st.success("✅ تم قراءة الملف")
+
+            # بوابة الدخول
+            if not st.session_state.email_submitted:
+                st.warning("🔒 يرجى التسجيل للمتابعة")
+                with st.form("gate"):
+                    n = st.text_input("الاسم")
+                    e = st.text_input("الايميل")
+                    if st.form_submit_button("عرض التقرير"):
+                        if "@" in e:
+                            st.session_state.email_submitted = True
+                            st.session_state.user_name = n
+                            save_to_google_sheets(n, e)
+                            st.rerun()
+            else:
+                # لوحة البيانات
+                st.info(f"أهلاً {st.session_state.user_name}")
+                nums = df.select_dtypes(include=['number']).columns
+                
+                if len(nums) > 0:
+                    st.subheader("💰 مؤشرات الربحية")
+                    col_sel1, col_sel2 = st.columns(2)
+                    
+                    # تقسيم السطور الطويلة
+                    v1 = col_sel1.selectbox(
+                        "المبيعات:", 
+                        nums, 
+                        index=0
+                    )
+                    
+                    idx2 = 1 if len(nums) > 1 else 0
+                    v2 = col_sel2.selectbox(
+                        "التكلفة:", 
+                        nums, 
+                        index=idx2
+                    )
+                    
+                    # الحسابات
+                    rev = df[v1].sum()
+                    cost = df[v2].sum()
+                    prof = rev - cost
+                    
+                    k1, k2, k3 = st.columns(3)
+                    k1.metric("المبيعات", f"{rev:,.0f}")
+                    k2.metric("التكاليف", f"{cost:,.0f}")
+                    k3.metric("الربح", f"{prof:,.0f}")
+                    
+                    st.plotly_chart(px.bar(df, x=df.columns[0], y=v1))
+                else:
+                    st.dataframe(df)
+
+        except Exception as e:
+            st.error("حدث خطأ في الملف")
