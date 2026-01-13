@@ -12,22 +12,25 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- 2. CSS ---
+# --- 2. CSS (تم تغيير الألوان هنا) ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 html, body, [class*="css"] { font-family: 'Cairo', sans-serif; }
+
+/* الكود اللوني الجديد: أخضر زمردي (#27AE60) */
 .service-box {
     background-color: white; padding: 20px;
     border-radius: 15px; text-align: center;
     box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-    border-top: 5px solid #2E86C1;
+    border-top: 5px solid #27AE60; 
     height: 200px; margin-bottom: 20px;
 }
 .hero-box {
     background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
     padding: 30px; border-radius: 20px;
     margin-bottom: 30px; text-align: right; direction: rtl;
+    border-right: 5px solid #27AE60;
 }
 .footer {
     position: fixed; left: 0; bottom: 0; width: 100%;
@@ -60,10 +63,10 @@ with st.sidebar:
     else:
         st.image("https://cdn-icons-png.flaticon.com/512/3094/3094851.png", width=80)
     
-    st.markdown("<h2 style='text-align: center; color: #2E86C1;'>منصة قرار</h2>", unsafe_allow_html=True)
+    # تم تغيير لون العنوان للأخضر
+    st.markdown("<h2 style='text-align: center; color: #27AE60;'>منصة قرار</h2>", unsafe_allow_html=True)
     st.markdown("---")
     
-    # القائمة العمودية
     menu = [
         "🏠 الرئيسية",
         "⚡ ديمو",
@@ -96,7 +99,8 @@ if nav == "🏠 الرئيسية":
             if not img_ok:
                 st.image("https://cdn-icons-png.flaticon.com/512/949/949635.png", width=180)
         with c2:
-            st.markdown("## د. ريهام مرسي")
+            # تم تغيير لون الاسم للأخضر
+            st.markdown("## <span style='color:#27AE60'>د. ريهام مرسي</span>", unsafe_allow_html=True)
             st.markdown("#### شريكك الاستراتيجي في تحليل الأعمال")
             st.write("أساعد الشركات على تحويل البيانات إلى قرارات مربحة.")
         st.markdown('</div>', unsafe_allow_html=True)
@@ -154,11 +158,12 @@ if nav == "🏠 الرئيسية":
 elif nav == "⚡ ديمو":
     st.header("⚡ تجربة حية")
     data = {'الفرع': ['الرياض', 'جدة']*5, 'المبيعات': [45000, 32000]*5}
-    # تم فصل الرسم البياني لتجنب الخطأ
+    # تم تغيير لون الرسم البياني للأخضر
     fig = px.bar(
         pd.DataFrame(data), 
         x='الفرع', 
-        y='المبيعات'
+        y='المبيعات',
+        color_discrete_sequence=['#27AE60']
     )
     st.plotly_chart(fig)
 
@@ -210,11 +215,11 @@ elif nav == "📂 التحليل":
                     k2.metric("التكاليف", f"{cost:,.0f}")
                     k3.metric("الربح", f"{prof:,.0f}")
                     
-                    # تم فصل الرسم البياني هنا أيضاً
                     fig_chart = px.bar(
                         df, 
                         x=df.columns[0], 
-                        y=v1
+                        y=v1,
+                        color_discrete_sequence=['#27AE60']
                     )
                     st.plotly_chart(fig_chart)
                 else:
