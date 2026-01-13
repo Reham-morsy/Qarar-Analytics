@@ -61,23 +61,26 @@ def save_data(n, e):
         return False
     except:
         return False
-
 # --- 4. القائمة الجانبية ---
 with st.sidebar:
-    try:
-        st.image("https://cdn-icons-png.flaticon.com/512/3094/3094851.png", width=80)
-    except:
-        st.write("💎")
+    # عرض اللوجو الجديد
+    if os.path.exists("logo.png"):
+        st.image("logo.png", use_column_width=True) # سيأخذ عرض القائمة تلقائياً
+    else:
+        st.header("💎 Qarar") # بديل مؤقت لو الصورة مش موجودة
         
-    st.title("منصة قرار")
-    nav = st.radio("القائمة:", ["🏠 الرئيسية", "⚡ ديمو", "📂 التحليل"])
     st.markdown("---")
-    st.markdown("[LinkedIn 🔗](https://www.linkedin.com/in/reham-morsy-45b61a192/)")
+    
+    # قائمة التنقل
+    nav = st.radio(
+        "القائمة:", 
+        ["🏠 الرئيسية", "⚡ ديمو", "📂 التحليل"]
+    )
+    
+    st.markdown("---")
+    st.markdown("**تواصل معنا:**")
+    st.markdown("[LinkedIn Profile 🔗](https://www.linkedin.com/in/reham-morsy-45b61a192/)")
     st.caption("© 2026 Dr. Reham Morsy")
-
-if 'auth' not in st.session_state: st.session_state.auth = False
-if 'user' not in st.session_state: st.session_state.user = "Guest"
-
 # --- 5. المحتوى ---
 
 # ==========================
