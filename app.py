@@ -12,16 +12,14 @@ st.set_page_config(
     layout="wide"
 )
 
-# --- 2. CSS (الألوان والخطوط فقط) ---
+# --- 2. CSS ---
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 html, body, [class*="css"] { font-family: 'Cairo', sans-serif; }
 
-/* لون العناوين */
 h1, h2, h3 { color: #27AE60; }
 
-/* تنسيق الأزرار */
 div.stButton > button {
     background-color: #27AE60; color: white; border: none;
     border-radius: 8px; padding: 8px 20px; font-weight: bold;
@@ -31,12 +29,12 @@ div.stButton > button:hover {
     background-color: #219150; border-color: #219150; color: white;
 }
 
-/* تنسيق كروت الخدمات */
 .service-card {
     background-color: #f9f9f9; padding: 20px;
     border-radius: 10px; text-align: center;
     border-top: 4px solid #27AE60;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+    margin-bottom: 10px;
 }
 
 .footer {
@@ -65,7 +63,6 @@ def save_data(n, e):
 
 # --- 4. القائمة الجانبية ---
 with st.sidebar:
-    # اللوجو (بدون تعقيد لضمان الظهور)
     if os.path.exists("logo.png"):
         st.image("logo.png", use_column_width=True)
     else:
@@ -100,24 +97,20 @@ with st.sidebar:
 # === الرئيسية ===
 if st.session_state.page == "🏠 الرئيسية":
     
-    # تقسيم الشاشة: عمود صغير للتسجيل (يسار) وعمود كبير للمعلومات (يمين)
     c1, c2 = st.columns([1, 2])
     
-    # --- العمود الأيسر: صندوق التسجيل (باستخدام Container الأصلي) ---
+    # التسجيل (يسار)
     with c1:
-        st.write("") # مسافة صغيرة
+        st.write("")
         st.write("")
         if not st.session_state.auth:
-            # هنا نستخدم الصندوق الأصلي ليكون أنيقاً ومضموناً
             with st.container(border=True):
                 st.markdown("#### 🔐 سجل للبدء")
                 st.caption("احصل على تجربة كاملة مجاناً")
-                
                 with st.form("login_form"):
                     name_in = st.text_input("الاسم", placeholder="الاسم الكريم")
                     email_in = st.text_input("الإيميل", placeholder="example@mail.com")
                     btn = st.form_submit_button("🚀 ابدأ الآن")
-                    
                     if btn:
                         if "@" in email_in and len(name_in) > 2:
                             save_data(name_in, email_in)
@@ -125,41 +118,58 @@ if st.session_state.page == "🏠 الرئيسية":
                             st.session_state.user = name_in
                             st.rerun()
                         else:
-                            st.error("بيانات غير مكتملة")
+                            st.error("البيانات غير صحيحة")
         else:
             with st.container(border=True):
-                st.success(f"أهلاً بك {st.session_state.user} 🌟")
+                st.success(f"أهلاً {st.session_state.user}")
                 if st.button("📂 الانتقال للتحليل"):
                     set_page("📂 التحليل")
                     st.rerun()
 
-    # --- العمود الأيمن: التعريف والصورة ---
+    # التعريف (يمين)
     with c2:
-        # تقسيم داخلي للصورة والنص لضمان الترتيب
-        row1_col1, row1_col2 = st.columns([1, 3])
-        
-        with row1_col1:
+        r1, r2 = st.columns([1, 3])
+        with r1:
             if os.path.exists("profile.png"):
                 st.image("profile.png", width=140)
             else:
                 st.image("https://cdn-icons-png.flaticon.com/512/949/949635.png", width=140)
-        
-        with row1_col2:
+        with r2:
             st.markdown("## د. ريهام مرسي")
             st.markdown("**شريكك الاستراتيجي في تحليل الأعمال**")
-            st.write("حول بياناتك المعقدة إلى قرارات رابحة. منصة تجمع بين الدقة الأكاديمية والسرعة التقنية.")
+            st.write("حول بياناتك المعقدة إلى قرارات رابحة.")
 
         st.markdown("---")
         st.markdown("#### 🚀 خدماتنا المتميزة")
-        
-        # الخدمات بشكل أفقي
         sc1, sc2, sc3 = st.columns(3)
         with sc1:
-            st.markdown('<div class="service-card">📊 <b>تحليل مالي</b><br><small>داشبورد تفاعلي فوري</small></div>', unsafe_allow_html=True)
+            st.markdown('<div class="service-card">📊 <b>تحليل مالي</b><br><small>داشبورد فوري</small></div>', unsafe_allow_html=True)
         with sc2:
-            st.markdown('<div class="service-card">💡 <b>دراسات جدوى</b><br><small>تقييم المخاطر بدقة</small></div>', unsafe_allow_html=True)
+            st.markdown('<div class="service-card">💡 <b>دراسات جدوى</b><br><small>تقييم المخاطر</small></div>', unsafe_allow_html=True)
         with sc3:
-            st.markdown('<div class="service-card">📈 <b>استشارات نمو</b><br><small>رفع الكفاءة وتقليل الهدر</small></div>', unsafe_allow_html=True)
+            st.markdown('<div class="service-card">📈 <b>استشارات نمو</b><br><small>رفع الكفاءة</small></div>', unsafe_allow_html=True)
+
+    st.write("---")
+    
+    # --- قسم سجل الخبرات (تمت إعادته هنا) ---
+    st.markdown("### 🎓 رحلة العلم والخبرة")
+    e1, e2, e3, e4 = st.columns(4)
+    
+    with e1:
+        st.success("🏗️ **2013**")
+        st.caption("بكالوريوس إدارة أعمال")
+    
+    with e2:
+        st.info("📈 **2017**")
+        st.caption("ماجستير في التمويل")
+        
+    with e3:
+        st.warning("🏛️ **الأكاديمية**")
+        st.caption("محاضر جامعي وباحث")
+        
+    with e4:
+        st.error("💼 **2020**")
+        st.caption("استشارات مالية للشركات")
 
     st.markdown('<div class="footer">جميع الحقوق محفوظة لمنصة قرار 2026</div>', unsafe_allow_html=True)
 
