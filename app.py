@@ -141,7 +141,6 @@ def save_data(n, e):
     except:
         return False
 
-# دالة رسم الكروت (لتجنب أخطاء النسخ)
 def draw_card(icon, title, desc):
     st.markdown(f"""
     <div class="service-card">
@@ -153,10 +152,17 @@ def draw_card(icon, title, desc):
 
 # --- 5. Sidebar ---
 with st.sidebar:
+    # --- حماية اللوجو ---
+    logo_ok = False
     if os.path.exists("logo.png"):
-        st.image("logo.png", use_column_width=True)
-    else:
+        try:
+            st.image("logo.png", use_column_width=True)
+            logo_ok = True
+        except:
+            pass
+    if not logo_ok:
         st.header("💎 Qarar")
+    # --------------------
     
     # Language Buttons
     c_l1, c_l2 = st.columns(2)
@@ -225,11 +231,21 @@ if st.session_state.page == "home":
     # Right: Hero & Services
     with c2:
         r1, r2 = st.columns([1, 3])
+        
         with r1:
+            # --- حماية صورة البروفايل (Try-Except) ---
+            img_shown = False
             if os.path.exists("profile.png"):
-                st.image("profile.png", width=130)
-            else:
+                try:
+                    st.image("profile.png", width=130)
+                    img_shown = True
+                except:
+                    pass # إذا فشل التحميل، تجاهل ولا توقف الموقع
+            
+            if not img_shown:
                 st.image("https://cdn-icons-png.flaticon.com/512/949/949635.png", width=130)
+            # ----------------------------------------
+
         with r2:
             st.markdown(f"## {txt['hero_name']}")
             st.markdown(f"**{txt['hero_role']}**")
@@ -238,7 +254,6 @@ if st.session_state.page == "home":
         st.markdown("---")
         st.markdown(f"#### {txt['services_title']}")
         
-        # رسم الكروت باستخدام الدالة (آمن جداً)
         sc1, sc2, sc3 = st.columns(3)
         with sc1: draw_card("📊", txt['s1_t'], txt['s1_d'])
         with sc2: draw_card("💡", txt['s2_t'], txt['s2_d'])
