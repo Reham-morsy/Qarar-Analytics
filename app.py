@@ -47,7 +47,8 @@ t = {
         'upload_txt': 'ارفع ملف Excel/CSV',
         'success_read': '✅ تم القراءة',
         'calc_title': '💰 حاسبة الربحية',
-        'm_rev': 'المبيعات', 'm_cost': 'التكاليف', 'm_prof': 'الربح'
+        'm_rev': 'المبيعات', 'm_cost': 'التكاليف', 'm_prof': 'الربح',
+        'linkedin_btn': 'تواصل معي على LinkedIn 🔗' # نص الزر بالعربي
     },
     'en': {
         'font': "'Poppins', sans-serif",
@@ -79,7 +80,8 @@ t = {
         'upload_txt': 'Upload Excel/CSV',
         'success_read': '✅ File Loaded',
         'calc_title': '💰 Profitability Calculator',
-        'm_rev': 'Revenue', 'm_cost': 'Cost', 'm_prof': 'Profit'
+        'm_rev': 'Revenue', 'm_cost': 'Cost', 'm_prof': 'Profit',
+        'linkedin_btn': 'Connect on LinkedIn 🔗' # نص الزر بالإنجليزي
     }
 }
 
@@ -193,6 +195,16 @@ with st.sidebar:
             st.session_state.auth = False
             st.session_state.user = "Guest"
             st.rerun()
+            
+    # --- زر لينكد إن الجديد (واضح وبارز) ---
+    st.markdown("<br>", unsafe_allow_html=True) # مسافة
+    st.link_button(
+        txt['linkedin_btn'], 
+        "https://www.linkedin.com/in/reham-morsy-45b61a192/",
+        use_container_width=True
+    )
+    
+    st.caption("© 2026 Dr. Reham Morsi")
 
 # --- 6. Content ---
 
@@ -233,18 +245,16 @@ if st.session_state.page == "home":
         r1, r2 = st.columns([1, 3])
         
         with r1:
-            # --- حماية صورة البروفايل (Try-Except) ---
+            # --- حماية صورة البروفايل ---
             img_shown = False
             if os.path.exists("profile.png"):
                 try:
                     st.image("profile.png", width=130)
                     img_shown = True
                 except:
-                    pass # إذا فشل التحميل، تجاهل ولا توقف الموقع
-            
+                    pass
             if not img_shown:
                 st.image("https://cdn-icons-png.flaticon.com/512/949/949635.png", width=130)
-            # ----------------------------------------
 
         with r2:
             st.markdown(f"## {txt['hero_name']}")
