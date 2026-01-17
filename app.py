@@ -35,6 +35,7 @@ div.stButton > button:hover {
     border-top: 4px solid #27AE60;
     box-shadow: 0 2px 5px rgba(0,0,0,0.05);
     margin-bottom: 10px;
+    height: 180px;
 }
 
 .footer {
@@ -71,12 +72,14 @@ with st.sidebar:
     st.markdown("<h3 style='text-align: center; color: #27AE60;'>منصة قرار</h3>", unsafe_allow_html=True)
     st.markdown("---")
     
+    # إدارة الصفحات
     if 'page' not in st.session_state: st.session_state.page = "🏠 الرئيسية"
     def set_page(p): st.session_state.page = p
     
     if 'auth' not in st.session_state: st.session_state.auth = False
     if 'user' not in st.session_state: st.session_state.user = "Guest"
     
+    # الأزرار
     if st.button("🏠 الرئيسية", use_container_width=True): set_page("🏠 الرئيسية")
     if st.button("⚡ ديمو", use_container_width=True): set_page("⚡ ديمو")
     if st.button("📂 التحليل", use_container_width=True): set_page("📂 التحليل")
@@ -99,7 +102,7 @@ if st.session_state.page == "🏠 الرئيسية":
     
     c1, c2 = st.columns([1, 2])
     
-    # التسجيل (يسار)
+    # --- العمود الأيسر: التسجيل ---
     with c1:
         st.write("")
         st.write("")
@@ -111,6 +114,7 @@ if st.session_state.page == "🏠 الرئيسية":
                     name_in = st.text_input("الاسم", placeholder="الاسم الكريم")
                     email_in = st.text_input("الإيميل", placeholder="example@mail.com")
                     btn = st.form_submit_button("🚀 ابدأ الآن")
+                    
                     if btn:
                         if "@" in email_in and len(name_in) > 2:
                             save_data(name_in, email_in)
@@ -126,7 +130,7 @@ if st.session_state.page == "🏠 الرئيسية":
                     set_page("📂 التحليل")
                     st.rerun()
 
-    # التعريف (يمين)
+    # --- العمود الأيمن: التعريف ---
     with c2:
         r1, r2 = st.columns([1, 3])
         with r1:
@@ -141,17 +145,38 @@ if st.session_state.page == "🏠 الرئيسية":
 
         st.markdown("---")
         st.markdown("#### 🚀 خدماتنا المتميزة")
+        
+        # كود الخدمات (تم فصله لتجنب الأخطاء)
+        html_s1 = """
+        <div class="service-card">
+            <h3>📊</h3>
+            <b>تحليل مالي</b><br>
+            <small>داشبورد فوري</small>
+        </div>
+        """
+        html_s2 = """
+        <div class="service-card">
+            <h3>💡</h3>
+            <b>دراسات جدوى</b><br>
+            <small>تقييم المخاطر</small>
+        </div>
+        """
+        html_s3 = """
+        <div class="service-card">
+            <h3>📈</h3>
+            <b>استشارات نمو</b><br>
+            <small>رفع الكفاءة</small>
+        </div>
+        """
+        
         sc1, sc2, sc3 = st.columns(3)
-        with sc1:
-            st.markdown('<div class="service-card">📊 <b>تحليل مالي</b><br><small>داشبورد فوري</small></div>', unsafe_allow_html=True)
-        with sc2:
-            st.markdown('<div class="service-card">💡 <b>دراسات جدوى</b><br><small>تقييم المخاطر</small></div>', unsafe_allow_html=True)
-        with sc3:
-            st.markdown('<div class="service-card">📈 <b>استشارات نمو</b><br><small>رفع الكفاءة</small></div>', unsafe_allow_html=True)
+        with sc1: st.markdown(html_s1, unsafe_allow_html=True)
+        with sc2: st.markdown(html_s2, unsafe_allow_html=True)
+        with sc3: st.markdown(html_s3, unsafe_allow_html=True)
 
     st.write("---")
     
-    # --- قسم سجل الخبرات (تمت إعادته هنا) ---
+    # --- قسم الخبرات ---
     st.markdown("### 🎓 رحلة العلم والخبرة")
     e1, e2, e3, e4 = st.columns(4)
     
@@ -177,7 +202,12 @@ if st.session_state.page == "🏠 الرئيسية":
 elif st.session_state.page == "⚡ ديمو":
     st.header("⚡ تجربة حية")
     data = {'الفرع': ['الرياض', 'جدة']*5, 'المبيعات': [45000, 32000]*5}
-    fig = px.bar(pd.DataFrame(data), x='الفرع', y='المبيعات', color_discrete_sequence=['#27AE60'])
+    fig = px.bar(
+        pd.DataFrame(data), 
+        x='الفرع', 
+        y='المبيعات', 
+        color_discrete_sequence=['#27AE60']
+    )
     st.plotly_chart(fig)
 
 # === التحليل ===
@@ -189,12 +219,17 @@ elif st.session_state.page == "📂 التحليل":
             st.rerun()
     else:
         st.header("📂 تحليل البيانات الخاص")
-        up_file = st.file_uploader("ارفع ملف Excel/CSV", type=['xlsx', 'csv'])
+        up_file = st.file_uploader(
+            "ارفع ملف Excel/CSV", 
+            type=['xlsx', 'csv']
+        )
         
         if up_file:
             try:
-                if up_file.name.endswith('.csv'): df = pd.read_csv(up_file)
-                else: df = pd.read_excel(up_file)
+                if up_file.name.endswith('.csv'):
+                    df = pd.read_csv(up_file)
+                else:
+                    df = pd.read_excel(up_file)
                 st.success("✅ تم القراءة")
                 
                 nums = df.select_dtypes(include=['number']).columns
@@ -202,6 +237,7 @@ elif st.session_state.page == "📂 التحليل":
                     st.subheader("💰 حاسبة الربحية")
                     c1, c2 = st.columns(2)
                     v1 = c1.selectbox("المبيعات:", nums, index=0)
+                    
                     idx = 1 if len(nums) > 1 else 0
                     v2 = c2.selectbox("التكلفة:", nums, index=idx)
                     
@@ -214,7 +250,12 @@ elif st.session_state.page == "📂 التحليل":
                     k2.metric("التكاليف", f"{cost:,.0f}")
                     k3.metric("الربح", f"{prof:,.0f}")
                     
-                    fig = px.bar(df, x=df.columns[0], y=v1, color_discrete_sequence=['#27AE60'])
+                    fig = px.bar(
+                        df, 
+                        x=df.columns[0], 
+                        y=v1, 
+                        color_discrete_sequence=['#27AE60']
+                    )
                     st.plotly_chart(fig)
                 else:
                     st.dataframe(df)
