@@ -37,13 +37,9 @@ t = {
         'welcome': 'مرحباً بك',
         'go_analysis': '📂 الذهاب للتحليل',
         'hero_name': 'د. ريهام مرسي',
-        
-        # --- التعديل الجديد (النبذة الاحترافية) ---
         'hero_role': 'استشارية التحليل المالي وتطوير الأعمال',
-        'hero_bio': 'حيث تلتقي الخبرة المالية العريقة  مع أحدث أدوات تحليل البيانات (Business Intelligence). أقدم لك رؤية استراتيجية تتجاوز مجرد الأرقام، لتنقل مشروعك من مرحلة "الغموض المالي" إلى مرحلة السيطرة والنمو المستدام.',
+        'hero_bio': 'حيث تلتقي الخبرة المالية العريقة (PhD) مع أحدث أدوات تحليل البيانات (Business Intelligence). أقدم لك رؤية استراتيجية تتجاوز مجرد الأرقام، لتنقل مشروعك من مرحلة "الغموض المالي" إلى مرحلة السيطرة والنمو المستدام.',
         'hero_desc': 'هل لديك بيانات كثيرة ولكن قرارات قليلة؟ منصة قرار تساعدك على تحويل الجداول الجامدة إلى رؤى استراتيجية واضحة.',
-        # ----------------------------------------
-        
         'services_title': '🚀 خدماتنا المتميزة',
         's1_t': 'تحليل مالي', 's1_d': 'لوحات تفاعلية تكشف الربحية',
         's2_t': 'دراسات جدوى', 's2_d': 'تقييم المخاطر بدقة عالية',
@@ -75,13 +71,9 @@ t = {
         'welcome': 'Welcome',
         'go_analysis': '📂 Go to Analysis',
         'hero_name': 'Dr. Reham Morsi',
-        
-        # --- New Professional Bio ---
         'hero_role': 'Financial Analysis & Business Development Consultant',
         'hero_bio': 'Where deep academic expertise (PhD) meets cutting-edge Business Intelligence. I offer you a strategic vision beyond just numbers, moving your business from "Financial Uncertainty" to Control and Sustainable Growth.',
         'hero_desc': 'Do you have lots of data but few decisions? Qarar helps you turn static spreadsheets into clear strategic insights.',
-        # ----------------------------
-        
         'services_title': '🚀 Our Services',
         's1_t': 'Financial Analysis', 's1_d': 'Interactive Profitability Dashboards',
         's2_t': 'Feasibility Studies', 's2_d': 'Accurate Risk Assessment',
@@ -101,7 +93,7 @@ t = {
 lang = st.session_state.language
 txt = t[lang]
 
-# --- 4. CSS ---
+# --- 4. CSS (تم تحديثه ليدعم الموبايل) ---
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
@@ -125,17 +117,32 @@ div.stButton > button:hover {{
     background-color: #219150; border-color: #219150; color: white;
 }}
 
-/* Cards */
+/* Cards - Desktop Default */
 .service-card {{
     background-color: #ffffff; padding: 25px;
     border-radius: 12px; text-align: center;
     border-top: 5px solid #27AE60;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     margin-bottom: 15px;
-    height: 200px;
+    height: 220px; /* Fixed height for laptop alignment */
     transition: transform 0.3s;
+    overflow: hidden;
 }}
 .service-card:hover {{ transform: translateY(-5px); }}
+
+/* Mobile Responsive Fixes */
+@media (max-width: 768px) {{
+    .service-card {{
+        height: auto !important; /* Let height grow with text on mobile */
+        min-height: 180px;
+        margin-bottom: 20px;
+    }}
+    div[data-testid="column"] {{
+        width: 100% !important;
+        flex: 1 1 auto !important;
+        min-width: auto !important;
+    }}
+}}
 
 /* Footer */
 .footer {{
@@ -205,6 +212,8 @@ with st.sidebar:
 
 # === HOME ===
 if st.session_state.page == "home":
+    # On desktop: Login (Left), Bio (Right)
+    # On mobile: Streamlit stacks them. Usually Left comes first.
     c1, c2 = st.columns([1, 2])
     
     with c1:
@@ -243,7 +252,6 @@ if st.session_state.page == "home":
         with r2:
             st.markdown(f"## {txt['hero_name']}")
             st.markdown(f"##### {txt['hero_role']}")
-            # هنا تظهر النبذة الجديدة
             st.caption(txt['hero_bio']) 
 
         st.markdown("---")
@@ -262,12 +270,13 @@ if st.session_state.page == "home":
     with e4: st.error("2020"); st.caption(f"Consultant")
     st.markdown(f'<div class="footer">{txt["footer"]}</div>', unsafe_allow_html=True)
 
-# === DEMO & ANALYSIS (No Changes) ===
+# === DEMO & ANALYSIS ===
 elif st.session_state.page == "demo":
     st.header(txt['nav_demo'])
     data = {'Branch': ['Riyadh', 'Jeddah']*5, 'Sales': [45000, 32000]*5}
     fig = px.bar(pd.DataFrame(data), x='Branch', y='Sales', color_discrete_sequence=['#27AE60'])
-    st.plotly_chart(fig)
+    # use_container_width makes chart responsive
+    st.plotly_chart(fig, use_container_width=True)
 
 elif st.session_state.page == "analysis":
     if not st.session_state.auth:
@@ -292,6 +301,7 @@ elif st.session_state.page == "analysis":
                     k1, k2, k3 = st.columns(3)
                     k1.metric(txt['m_rev'], f"{rev:,.0f}"); k2.metric(txt['m_cost'], f"{cost:,.0f}"); k3.metric(txt['m_prof'], f"{prof:,.0f}")
                     fig = px.bar(df, x=df.columns[0], y=v1, color_discrete_sequence=['#27AE60'])
-                    st.plotly_chart(fig)
-                else: st.dataframe(df)
+                    # use_container_width makes chart responsive
+                    st.plotly_chart(fig, use_container_width=True)
+                else: st.dataframe(df, use_container_width=True)
             except: st.error("File Error")
