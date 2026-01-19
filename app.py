@@ -93,19 +93,34 @@ t = {
 lang = st.session_state.language
 txt = t[lang]
 
-# --- 4. CSS (تم تحديثه ليدعم الموبايل) ---
+# --- 4. CSS (V53 - Fixed Mobile Layout) ---
 st.markdown(f"""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
 
-html, body, [class*="css"] {{ 
-    font-family: {txt['font']}; 
+/* Apply font globally but do NOT force RTL on layout structure */
+html, body {{
+    font-family: {txt['font']};
+}}
+
+/* Apply RTL only to content containers to avoid mobile glitches */
+.stMarkdown, .stButton, .stTextInput, .stSelectbox, .stAlert {{
     direction: {txt['dir']};
     text-align: {txt['align']};
 }}
 
-h1, h2, h3 {{ color: #27AE60; }}
+/* Specific fix for Input fields */
+div[data-baseweb="input"] > div {{
+    direction: {txt['dir']};
+    text-align: {txt['align']};
+}}
+
+h1, h2, h3, h4, h5, h6 {{
+    color: #27AE60;
+    direction: {txt['dir']};
+    text-align: {txt['align']};
+}}
 
 /* Buttons */
 div.stButton > button {{
@@ -117,30 +132,22 @@ div.stButton > button:hover {{
     background-color: #219150; border-color: #219150; color: white;
 }}
 
-/* Cards - Desktop Default */
+/* Cards - Mobile Responsive */
 .service-card {{
     background-color: #ffffff; padding: 25px;
     border-radius: 12px; text-align: center;
     border-top: 5px solid #27AE60;
     box-shadow: 0 4px 15px rgba(0,0,0,0.05);
     margin-bottom: 15px;
-    height: 220px; /* Fixed height for laptop alignment */
+    height: 220px;
     transition: transform 0.3s;
     overflow: hidden;
 }}
-.service-card:hover {{ transform: translateY(-5px); }}
-
-/* Mobile Responsive Fixes */
 @media (max-width: 768px) {{
     .service-card {{
-        height: auto !important; /* Let height grow with text on mobile */
+        height: auto !important;
         min-height: 180px;
         margin-bottom: 20px;
-    }}
-    div[data-testid="column"] {{
-        width: 100% !important;
-        flex: 1 1 auto !important;
-        min-width: auto !important;
     }}
 }}
 
@@ -212,10 +219,9 @@ with st.sidebar:
 
 # === HOME ===
 if st.session_state.page == "home":
-    # On desktop: Login (Left), Bio (Right)
-    # On mobile: Streamlit stacks them. Usually Left comes first.
     c1, c2 = st.columns([1, 2])
     
+    # On Mobile: Column 1 (Login) appears first usually.
     with c1:
         st.write("") 
         st.write("")
@@ -275,7 +281,6 @@ elif st.session_state.page == "demo":
     st.header(txt['nav_demo'])
     data = {'Branch': ['Riyadh', 'Jeddah']*5, 'Sales': [45000, 32000]*5}
     fig = px.bar(pd.DataFrame(data), x='Branch', y='Sales', color_discrete_sequence=['#27AE60'])
-    # use_container_width makes chart responsive
     st.plotly_chart(fig, use_container_width=True)
 
 elif st.session_state.page == "analysis":
@@ -301,7 +306,6 @@ elif st.session_state.page == "analysis":
                     k1, k2, k3 = st.columns(3)
                     k1.metric(txt['m_rev'], f"{rev:,.0f}"); k2.metric(txt['m_cost'], f"{cost:,.0f}"); k3.metric(txt['m_prof'], f"{prof:,.0f}")
                     fig = px.bar(df, x=df.columns[0], y=v1, color_discrete_sequence=['#27AE60'])
-                    # use_container_width makes chart responsive
                     st.plotly_chart(fig, use_container_width=True)
                 else: st.dataframe(df, use_container_width=True)
             except: st.error("File Error")
