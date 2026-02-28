@@ -309,3 +309,86 @@ elif st.session_state.page == "analysis":
                     st.plotly_chart(fig, use_container_width=True)
                 else: st.dataframe(df, use_container_width=True)
             except: st.error("File Error")
+import streamlit as st
+import plotly.graph_objects as go
+import pandas as pd
+
+# إعدادات الصفحة
+st.set_page_config(layout="wide")
+
+# إضافة CSS مخصص لمحاكاة تصميم البطاقات والزوايا المنحنية
+st.markdown("""
+    <style>
+    .main {
+        background-color: #f8f9fa;
+    }
+    .balance-card {
+        background-color: #1a3c34;
+        color: white;
+        padding: 30px;
+        border-radius: 25px;
+        margin-bottom: 20px;
+    }
+    .metric-card {
+        background-color: white;
+        padding: 20px;
+        border-radius: 20px;
+        border: 1px solid #eee;
+        box-shadow: 2px 2px 10px rgba(0,0,0,0.02);
+    }
+    </style>
+    """, unsafe_allow_html=True)
+
+# تقسيم الصفحة إلى أعمدة (Column Layout)
+col1, col2, col3 = st.columns([1, 2, 1])
+
+with col1:
+    # محاكاة بطاقة الرصيد الداكنة
+    st.markdown("""
+        <div class="balance-card">
+            <p style="opacity: 0.8; margin-bottom: 5px;">Balance Amount</p>
+            <h1 style="margin-top: 0;">$562,000</h1>
+            <div style="display: flex; justify-content: space-between; margin-top: 40px;">
+                <span>EXP 11/29</span>
+                <span>CVV 323</span>
+            </div>
+        </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    # محاكاة الرسم البياني للأعمدة (Cashflow)
+    months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul']
+    income = [5000, 4000, 6000, 5500, 7000, 6000, 5000]
+    expense = [3000, 2500, 4000, 3500, 4500, 4000, 3000]
+
+    fig = go.Figure()
+    fig.add_trace(go.Bar(x=months, y=income, name='Income', marker_color='#1a3c34'))
+    fig.add_trace(go.Bar(x=months, y=expense, name='Expense', marker_color='#b4e197'))
+
+    fig.update_layout(
+        barmode='group',
+        plot_bgcolor='rgba(0,0,0,0)',
+        paper_bgcolor='rgba(0,0,0,0)',
+        height=300,
+        margin=dict(l=0, r=0, t=30, b=0),
+        legend=dict(orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1)
+    )
+    
+    st.markdown('<div class="metric-card"><b>Cashflow</b>', unsafe_allow_html=True)
+    st.plotly_chart(fig, use_container_width=True)
+    st.markdown('</div>', unsafe_allow_html=True)
+
+with col3:
+    # محاكاة الرسم الدائري (Statistics)
+    labels = ['Rent', 'Investment', 'Education', 'Food']
+    values = [2100, 525, 420, 280]
+    colors = ['#1a3c34', '#2d5a4c', '#b4e197', '#e8f5e9']
+
+    fig_pie = go.Figure(data=[go.Pie(labels=labels, values=values, hole=.7)])
+    fig_pie.update_traces(marker=dict(colors=colors), textinfo='none')
+    fig_pie.update_layout(showlegend=False, height=250, margin=dict(l=0, r=0, t=0, b=0))
+
+    st.markdown('<div class="metric-card" style="text-align: center;"><b>Total Expense</b>', unsafe_allow_html=True)
+    st.plotly_chart(fig_pie, use_container_width=True)
+    st.write("### $3,500")
+    st.markdown('</div>', unsafe_allow_html=True)
