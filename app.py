@@ -468,4 +468,4 @@ with st.sidebar:
     selected_region = st.selectbox("اختر المنطقة العقارية", ["القاهرة", "بني سويف", "الشيخ زايد"])
     
 # هنا يمكنك ربط البيانات بالفلتر
-# df_filtered = df[df['Region'] == selected_region] """
+# df_filtered = df[df['Region'] == selected_region] """)
