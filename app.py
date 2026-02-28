@@ -510,3 +510,60 @@ fig.update_traces(marker_line_width=0, selector=dict(type='bar'))
 
 # عرض الرسم في Streamlit
 st.plotly_chart(fig, use_container_width=True)
+import plotly.graph_objects as go
+import pandas as pd
+
+# 1. تجهيز البيانات (يمكنك ربطها بملف Excel لاحقاً)
+data = {
+    'الفرع': ['جدة', 'الرياض'],
+    'المبيعات': [160000, 220000]
+}
+df_sales = pd.DataFrame(data)
+
+# 2. حساب نسبة النمو (الفرق بين الرياض وجدة)
+growth = ((df_sales['المبيعات'][1] - df_sales['المبيعات'][0]) / df_sales['المبيعات'][0]) * 100
+
+# 3. إنشاء الرسم البياني الاحترافي
+fig = go.Figure()
+
+# إضافة الأعمدة بتنسيق ألوان "قرار أناليتكس"
+fig.add_trace(go.Bar(
+    x=df_sales['الفرع'],
+    y=df_sales['المبيعات'],
+    text=[f"{v:,.0f} $" for v in df_sales['المبيعات']], # إظهار الرقم فوق العمود
+    textposition='auto',
+    marker=dict(
+        color=['#b4e197', '#1a3c34'], # تدرج من الفاتح للداكن
+        line=dict(color='#1a3c34', width=1)
+    ),
+    hovertemplate="<b>الفرع:</b> %{x}<br><b>المبيعات:</b> %{y:,.0f} $<extra></extra>"
+))
+
+# 4. إضافة "لمسة قرار": سهم يوضح نسبة النمو
+fig.add_annotation(
+    x='الرياض',
+    y=220000,
+    text=f"↗ نمو بنسبة {growth:.1f}%",
+    showarrow=False,
+    yshift=30,
+    font=dict(color="#1a3c34", size=16, family="Arial Black"),
+    bgcolor="#e8f5e9",
+    bordercolor="#1a3c34",
+    borderwidth=1,
+    borderpad=4,
+    border-radius=10
+)
+
+# 5. تحسين مظهر الواجهة (تنسيق MacBook)
+fig.update_layout(
+    title={'text': "تحليل المبيعات حسب المنطقة", 'y':0.95, 'x':0.5, 'xanchor': 'center'},
+    plot_bgcolor='rgba(0,0,0,0)',
+    paper_bgcolor='rgba(0,0,0,0)',
+    yaxis=dict(showgrid=True, gridcolor='#eee', title="إجمالي المبيعات"),
+    xaxis=dict(title=""),
+    margin=dict(l=20, r=20, t=60, b=20),
+    height=450
+)
+
+# عرض الرسم في المنصة
+st.plotly_chart(fig, use_container_width=True)
