@@ -553,17 +553,16 @@ fig.add_annotation(
     borderpad=4,
     border-radius=10
 )
-
-# 5. تحسين مظهر الواجهة (تنسيق MacBook)
-fig.update_layout(
-    title={'text': "تحليل المبيعات حسب المنطقة", 'y':0.95, 'x':0.5, 'xanchor': 'center'},
-    plot_bgcolor='rgba(0,0,0,0)',
-    paper_bgcolor='rgba(0,0,0,0)',
-    yaxis=dict(showgrid=True, gridcolor='#eee', title="إجمالي المبيعات"),
-    xaxis=dict(title=""),
-    margin=dict(l=20, r=20, t=60, b=20),
-    height=450
+fig.add_annotation(
+    x='الرياض',
+    y=220000,
+    text=f"↗ نمو بنسبة {growth:.1f}%",
+    showarrow=False,
+    yshift=30,
+    font=dict(color="#1a3c34", size=16),
+    bgcolor="#e8f5e9",
+    bordercolor="#1a3c34",
+    borderwidth=1,
+    borderpad=4,
+    border_radius=10  # تم التغيير من - إلى _
 )
-
-# عرض الرسم في المنصة
-st.plotly_chart(fig, use_container_width=True)
