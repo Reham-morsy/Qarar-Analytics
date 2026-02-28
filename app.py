@@ -392,3 +392,49 @@ with col3:
     st.plotly_chart(fig_pie, use_container_width=True)
     st.write("### $3,500")
     st.markdown('</div>', unsafe_allow_html=True)
+import streamlit as st
+import pandas as pd
+import plotly.graph_objects as go
+
+# 1. دالة لتحميل البيانات (مثال على ملف Excel)
+@st.cache_data
+def load_data():
+    # يمكنك استبدال هذا الرابط بمسار ملفك المحلي على الـ MacBook
+    # df = pd.read_excel("data_real_estate.xlsx") 
+    
+    # بيانات تجريبية لمحاكاة الواقع
+    data = {
+        'Month': ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+        'Income': [54000, 62000, 48000, 71000, 85000, 92000],
+        'Expense': [32000, 35000, 31000, 40000, 42000, 38000]
+    }
+    return pd.DataFrame(data)
+
+df = load_data()
+
+# 2. حساب القيم الإجمالية تلقائياً
+total_income = df['Income'].sum()
+total_expense = df['Expense'].sum()
+balance = total_income - total_expense
+
+# 3. عرض البطاقة الرئيسية بالبيانات الحقيقية
+col1, col2 = st.columns([1, 2])
+
+with col1:
+    st.markdown(f"""
+        <div style="background-color: #1a3c34; color: white; padding: 30px; border-radius: 25px;">
+            <p style="opacity: 0.8;">Total Balance</p>
+            <h1>${balance:,.0f}</h1>
+            <br>
+            <p>Real-time Analysis</p>
+        </div>
+    """, unsafe_allow_html=True)
+
+with col2:
+    # رسم بياني يتحدث تلقائياً مع البيانات
+    fig = go.Figure()
+    fig.add_trace(go.Bar(x=df['Month'], y=df['Income'], name='Income', marker_color='#1a3c34'))
+    fig.add_trace(go.Bar(x=df['Month'], y=df['Expense'], name='Expense', marker_color='#b4e197'))
+    
+    fig.update_layout(height=300, margin=dict(l=0, r=0, t=20, b=0))
+    st.plotly_chart(fig, use_container_width=True)
