@@ -454,3 +454,18 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+st.markdown("""
+    <style>
+    /* إضافة تأثير الظل عند تمرير الماوس على البطاقات */
+    div.stMarkdown div[style*="background-color: #1a3c34"]:hover {
+        transform: translateY(-5px);
+        transition: 0.3s;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    # إضافة فلتر في القائمة الجانبية
+with st.sidebar:
+    st.header("إعدادات الفلتر")
+    selected_region = st.selectbox("اختر المنطقة العقارية", ["القاهرة", "بني سويف", "الشيخ زايد"])
+    
+# هنا يمكنك ربط البيانات بالفلتر
+# df_filtered = df[df['Region'] == selected_region]
