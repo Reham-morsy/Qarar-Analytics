@@ -475,3 +475,38 @@ with st.sidebar:
         ["الكل", "القاهرة", "بني سويف", "الشيخ زايد"]
     )
     st.info(f"عرض بيانات: {selected_region}")
+import plotly.express as px
+
+# 1. تجهيز البيانات (مثال بناءً على رسمة ديمو)
+data = {
+    'Branch': ['Riyadh', 'Jeddah'],
+    'Sales': [220000, 160000]
+}
+df_sales = pd.DataFrame(data)
+
+# 2. إنشاء الرسم البياني التفاعلي
+fig = px.bar(
+    df_sales, 
+    x='Branch', 
+    y='Sales',
+    text_auto='.2s', # إظهار الأرقام فوق الأعمدة بشكل مختصر
+    color='Sales', # تدرج الألوان بناءً على حجم المبيعات
+    color_continuous_scale=['#b4e197', '#1a3c34'] # تدرج من الأخضر الفاتح للداكن
+)
+
+# 3. تحسين المظهر ليتناسب مع MacBook وتصميمك
+fig.update_layout(
+    plot_bgcolor='rgba(0,0,0,0)', # خلفية شفافة
+    paper_bgcolor='rgba(0,0,0,0)',
+    font=dict(size=14),
+    margin=dict(l=20, r=20, t=40, b=20),
+    xaxis_title="",
+    yaxis_title="Sales ($)",
+    showlegend=False
+)
+
+# 4. إضافة لمسة الزوايا المنحنية للأعمدة (اختياري)
+fig.update_traces(marker_line_width=0, selector=dict(type='bar'))
+
+# عرض الرسم في Streamlit
+st.plotly_chart(fig, use_container_width=True)
