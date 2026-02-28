@@ -553,6 +553,7 @@ fig.add_annotation(
     borderpad=4,
     border-radius=10
 )
+# 4. إضافة سهم النمو بشكل صحيح برمجياً
 fig.add_annotation(
     x='الرياض',
     y=220000,
@@ -563,7 +564,6 @@ fig.add_annotation(
     bgcolor="#e8f5e9",
     bordercolor="#1a3c34",
     borderwidth=1,
-    borderpad=4
-    # ملاحظة: بعض إصدارات Plotly لا تدعم border_radius في annotation
-    # لذا يفضل حذفه أو استخدامه بـ (_) إذا كان الإصدار حديثاً جداً
+    borderpad=6
+    # تم حذف سطر border-radius تماماً لضمان عمل الكود
 )
