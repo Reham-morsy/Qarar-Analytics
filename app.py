@@ -538,21 +538,6 @@ fig.add_trace(go.Bar(
     ),
     hovertemplate="<b>الفرع:</b> %{x}<br><b>المبيعات:</b> %{y:,.0f} $<extra></extra>"
 ))
-
-# 4. إضافة "لمسة قرار": سهم يوضح نسبة النمو
-fig.add_annotation(
-    x='الرياض',
-    y=220000,
-    text=f"↗ نمو بنسبة {growth:.1f}%",
-    showarrow=False,
-    yshift=30,
-    font=dict(color="#1a3c34", size=16, family="Arial Black"),
-    bgcolor="#e8f5e9",
-    bordercolor="#1a3c34",
-    borderwidth=1,
-    borderpad=4,
-    border-radius=10
-)
 # 4. إضافة سهم النمو بشكل صحيح برمجياً
 fig.add_annotation(
     x='الرياض',
