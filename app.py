@@ -438,3 +438,19 @@ with col2:
     
     fig.update_layout(height=300, margin=dict(l=0, r=0, t=20, b=0))
     st.plotly_chart(fig, use_container_width=True)
+st.markdown("""
+    <style>
+    /* إضافة تأثير الظل عند تمرير الماوس على البطاقات */
+    div.stMarkdown div[style*="background-color: #1a3c34"]:hover {
+        transform: translateY(-5px);
+        transition: 0.3s;
+        box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+    }
+    
+    /* تحسين شكل القائمة الجانبية */
+    section[data-testid="stSidebar"] {
+        background-color: #f0f2f6;
+        border-right: 1px solid #e0e0e0;
+    }
+    </style>
+""", unsafe_allow_html=True)
