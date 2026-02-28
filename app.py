@@ -563,6 +563,7 @@ fig.add_annotation(
     bgcolor="#e8f5e9",
     bordercolor="#1a3c34",
     borderwidth=1,
-    borderpad=4,
-    border_radius=10  # تم التغيير من - إلى _
+    borderpad=4
+    # ملاحظة: بعض إصدارات Plotly لا تدعم border_radius في annotation
+    # لذا يفضل حذفه أو استخدامه بـ (_) إذا كان الإصدار حديثاً جداً
 )
